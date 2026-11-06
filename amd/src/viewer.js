@@ -21,13 +21,14 @@
  * @copyright  2026 Boban Blagojević
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-import {languages} from 'tiny_codelab/common';
-import {readBlock, stdinOf} from 'tiny_codelab/embed';
+import {languages, setupLanguages} from 'tiny_codelab/common';
+import {readBlock, stdinOf, setupOf} from 'tiny_codelab/embed';
 import {createEditor} from 'tiny_codelab/monaco';
 import {run} from 'tiny_codelab/runner';
 import {showRunning, showResult, showError} from 'tiny_codelab/console';
 import {available as pythonAvailable} from 'tiny_codelab/python';
 import {PythonSession} from 'tiny_codelab/session';
+import {fullscreenButton} from 'tiny_codelab/fullscreen';
 import {RemoteSession, runsInteractively, stepsInteractively} from 'tiny_codelab/remote';
 import {getStrings} from 'core/str';
 import {eventTypes} from 'core_filters/events';
@@ -54,7 +55,8 @@ let config = {pyodide: '', interactive: []};
  */
 const loadStrings = async() => {
     if (!strings) {
-        const keys = ['run', 'reset', 'copy', 'copied', 'input', 'output', 'editedcopy', 'step', 'stop']
+        const keys = ['run', 'reset', 'copy', 'copied', 'input', 'output', 'editedcopy', 'step', 'stop', 'fullscreen',
+            'exitfullscreen']
             .concat(Object.keys(languages).map((lang) => `lang_${lang}`));
         const values = await getStrings(keys.map((key) => ({key, component: 'tiny_codelab'})));
         strings = Object.fromEntries(keys.map((key, i) => [key, values[i]]));
@@ -165,7 +167,8 @@ const sessionFor = (modes, {block, editor, panel, vars, stdin, buttons}) => {
     };
     const session = modes.browser
         ? new PythonSession({base: config.pyodide, editor, panel, vars, onState})
-        : new RemoteSession({lang: block.lang, program: () => editor.getValue(), panel, onState, editor, vars});
+        : new RemoteSession({lang: block.lang, program: () => editor.getValue(), panel, onState, editor, vars,
+            setup: () => block.setup});
     stepButton?.addEventListener('click', () => {
         if (session.state === 'paused') {
             session.step();
@@ -251,6 +254,7 @@ const build = async(pre, index) => {
         const details = document.createElement('details');
         details.className = 'filter_codelab-stdin';
         details.open = block.stdin !== '' || READS_INPUT.test(block.code);
+        details.hidden = setupLanguages.includes(block.lang);
         const summary = document.createElement('summary');
         summary.textContent = s.input;
         stdin = document.createElement('textarea');
@@ -272,6 +276,10 @@ const build = async(pre, index) => {
     pre.hidden = true;
     if (stdinOf(pre)) {
         stdinOf(pre).hidden = true;
+    }
+    if (setupOf(pre)) {
+        // The tables and data of SQL are never shown to readers.
+        setupOf(pre).hidden = true;
     }
     pre.after(viewer);
 
@@ -312,6 +320,7 @@ const build = async(pre, index) => {
     });
 
     session = sessionFor(modes, {block, editor, panel, vars, stdin, buttons});
+    toolbar.insertBefore(fullscreenButton({root: viewer, editor, label: s.fullscreen, exitLabel: s.exitfullscreen}), copyButton);
     if (block.run) {
         runButton.addEventListener('click', doRun);
         resetButton.addEventListener('click', () => {

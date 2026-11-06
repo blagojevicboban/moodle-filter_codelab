@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.0 (2026-11-06)
+
+- SQL examples (MySQL / MariaDB) on the CodeLab runner; their setup is never shown to readers.
+- Full screen button. Needs tiny_codelab 1.3.0.
+
 ## 1.2.0 (2026-11-06)
 
 - Step for C and C++ examples when the site has a CodeLab runner: line by line with the variables. Needs

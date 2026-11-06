@@ -45,3 +45,8 @@
 .filter_codelab-viewer .filter_codelab-console {
     margin: 0 .5rem .5rem;
 }
+
+/* The setup of an SQL example (tables and data) is never shown to readers, also before the viewer is built. */
+pre.codelab-setup {
+    display: none;
+}
