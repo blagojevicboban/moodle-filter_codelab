@@ -237,6 +237,7 @@ const build = async(pre, index) => {
         maxLines: 30,
         label: langName,
         onRun: block.run ? doRun : null,
+        pyodide: block.run ? config.pyodide : '',
     });
 
     if (browser) {

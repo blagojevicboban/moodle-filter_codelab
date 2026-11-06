@@ -11,7 +11,7 @@ code editor of VS Code ([Monaco](https://microsoft.github.io/monaco-editor/)).
 
 Languages: **C**, **C++**, **Python**, **Java**, **C#**, **JavaScript** (Node.js), **Pascal** and **PHP**.
 
-> Status: **alpha** (0.4.0), under development.
+> Status: **alpha** (0.5.0), under development.
 
 ## Features
 
@@ -21,7 +21,8 @@ Languages: **C**, **C++**, **Python**, **Java**, **C#**, **JavaScript** (Node.js
 - **Python in the browser** ([Pyodide](https://pyodide.org)):
   - `input()` asks in the console while the program runs;
   - **Step** marks the line that runs next and shows the variables, with changed values highlighted;
-  - **Stop** also ends an endless loop.
+  - **Stop** also ends an endless loop;
+  - typing help from Jedi: methods of the reader's own variables, parameters of calls and syntax errors.
 - **Restore original** and **Copy**.
 - **The reader's own copy**: the reader's changes are kept in their browser, so they are still there after a reload.
 - **Fast pages**: an editor is built only when its example comes near the screen. Pages with dozens of examples stay quick.
@@ -31,7 +32,7 @@ Languages: **C**, **C++**, **Python**, **Java**, **C#**, **JavaScript** (Node.js
 
 - Moodle 4.5 to 5.3
 - PHP 8.2+
-- [tiny_codelab](https://github.com/blagojevicboban/moodle-tiny_codelab) 0.4.0 or newer, installed first
+- [tiny_codelab](https://github.com/blagojevicboban/moodle-tiny_codelab) 0.5.0 or newer, installed first
 
 Enable the filter in *Site administration → Plugins → Filters → Manage filters*.
 
