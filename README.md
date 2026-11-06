@@ -13,6 +13,9 @@ Languages: **C**, **C++**, **Python**, **Java**, **C#**, **JavaScript** (Node.js
 
 > Status: **alpha** (0.5.0), under development.
 
+> **Important:** after installing, switch the filter on in *Site administration → Plugins → Filters → Manage filters*
+> (**CodeLab → On**). Until then, readers see the examples as plain code: they cannot edit or run them.
+
 ## Features
 
 - **Run**: the program is compiled and run on the [Jobe](https://github.com/trampgeek/jobe) server of tiny_codelab.
@@ -28,13 +31,18 @@ Languages: **C**, **C++**, **Python**, **Java**, **C#**, **JavaScript** (Node.js
 - **Fast pages**: an editor is built only when its example comes near the screen. Pages with dozens of examples stay quick.
 - Examples without `codelab-run` are shown read-only, with syntax highlighting.
 
+## Installation
+
+1. Install **tiny_codelab** first, then **filter_codelab** and **qtype_codelab**.
+2. In the settings of tiny_codelab, set the address and the API key of your Jobe server.
+3. **Important: switch the filter on.** Go to *Site administration → Plugins → Filters → Manage filters* and set
+   **CodeLab** to **On**. Until the filter is on, readers see the examples as plain code: they cannot edit or run them.
+
 ## Requirements
 
 - Moodle 4.5 to 5.3
 - PHP 8.2+
 - [tiny_codelab](https://github.com/blagojevicboban/moodle-tiny_codelab) 0.5.0 or newer, installed first
-
-Enable the filter in *Site administration → Plugins → Filters → Manage filters*.
 
 ## The CodeLab plugins
 
