@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0 (2026-11-06)
+
+- Step for C and C++ examples when the site has a CodeLab runner: line by line with the variables. Needs
+  tiny_codelab 1.2.0.
+
 ## 1.1.0 (2026-11-06)
 
 - Interactive programs in examples: with a CodeLab runner set in tiny_codelab, the reader types the input of C, C++,
