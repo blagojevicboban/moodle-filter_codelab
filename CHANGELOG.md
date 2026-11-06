@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.0 (2026-11-06)
+
+- First stable release. Needs tiny_codelab 1.0.0.
+
 ## 0.5.0 (2026-11-06)
 
 - Python typing help from Jedi in the examples that readers can run. Needs tiny_codelab 0.5.0.
