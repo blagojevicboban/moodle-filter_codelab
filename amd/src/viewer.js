@@ -28,6 +28,7 @@ import {run} from 'tiny_codelab/runner';
 import {showRunning, showResult, showError} from 'tiny_codelab/console';
 import {available as pythonAvailable} from 'tiny_codelab/python';
 import {PythonSession} from 'tiny_codelab/session';
+import {RemoteSession, runsInteractively} from 'tiny_codelab/remote';
 import {getStrings} from 'core/str';
 import {eventTypes} from 'core_filters/events';
 
@@ -44,7 +45,7 @@ let observer = null;
 let strings = null;
 let counter = 0;
 // Settings of the in-browser runtimes (tiny_codelab\local\runtime::config()).
-let config = {pyodide: ''};
+let config = {pyodide: '', interactive: []};
 
 /**
  * Strings of the viewer, loaded once.
@@ -123,6 +124,57 @@ const button = (text, action, style = 'btn-secondary') => {
 };
 
 /**
+ * A run on the interactive server for a viewer, with its buttons.
+ *
+ * @param {string} lang
+ * @param {function(): string} program
+ * @param {HTMLElement} panel
+ * @param {Object} buttons
+ * @param {HTMLButtonElement} buttons.runButton
+ * @param {HTMLButtonElement} buttons.stopButton
+ * @param {HTMLButtonElement} buttons.resetButton
+ * @returns {RemoteSession}
+ */
+const remoteFor = (lang, program, panel, {runButton, stopButton, resetButton}) => {
+    const session = new RemoteSession({
+        lang,
+        program,
+        panel,
+        onState: (state) => {
+            runButton.disabled = state === 'running';
+            stopButton.hidden = state === 'idle';
+            resetButton.disabled = state !== 'idle';
+        },
+    });
+    stopButton.addEventListener('click', () => session.stop());
+    return session;
+};
+
+/**
+ * The buttons of a viewer's toolbar: Run and Restore original for examples that run, Step for Python in the browser,
+ * Stop for Python in the browser and the interactive server, and Copy.
+ *
+ * @param {Object} s strings
+ * @param {boolean} runs
+ * @param {boolean} browser
+ * @param {boolean} remote
+ * @returns {Object<string, HTMLButtonElement|null>}
+ */
+const toolbarButtons = (s, runs, browser, remote) => {
+    const stopButton = browser || remote ? button(s.stop, 'stop', 'btn-danger') : null;
+    if (stopButton) {
+        stopButton.hidden = true;
+    }
+    return {
+        runButton: runs ? button(s.run, 'run', 'btn-primary') : null,
+        stepButton: browser ? button(s.step, 'step') : null,
+        stopButton,
+        resetButton: runs ? button(s.reset, 'reset') : null,
+        copyButton: button(s.copy, 'copy'),
+    };
+};
+
+/**
  * Build the viewer of one block in place of the pre element.
  *
  * @param {HTMLElement} pre
@@ -149,14 +201,9 @@ const build = async(pre, index) => {
     toolbar.append(badge);
     // Python runs in the browser when it can: input() asks while the program runs, Step goes line by line.
     const browser = block.run && block.lang === 'python' && config.pyodide !== '' && pythonAvailable();
-    const runButton = block.run ? button(s.run, 'run', 'btn-primary') : null;
-    const stepButton = browser ? button(s.step, 'step') : null;
-    const stopButton = browser ? button(s.stop, 'stop', 'btn-danger') : null;
-    if (stopButton) {
-        stopButton.hidden = true;
-    }
-    const resetButton = block.run ? button(s.reset, 'reset') : null;
-    const copyButton = button(s.copy, 'copy');
+    // C, C++, Java and C# run on the interactive server when the site has one: the input is typed while they run.
+    const remote = block.run && runsInteractively(config.interactive, block.lang);
+    const {runButton, stepButton, stopButton, resetButton, copyButton} = toolbarButtons(s, block.run, browser, remote);
     [runButton, stepButton, stopButton, resetButton, copyButton].filter(Boolean).forEach((b) => toolbar.append(b));
     const note = document.createElement('span');
     note.className = 'filter_codelab-note';
@@ -206,8 +253,13 @@ const build = async(pre, index) => {
 
     let editor = null;
     let session = null;
+    let remoteSession = null;
     const doRun = async() => {
         if (!editor || runButton.disabled) {
+            return;
+        }
+        if (remoteSession) {
+            await remoteSession.start(stdin.value);
             return;
         }
         if (session) {
@@ -240,6 +292,9 @@ const build = async(pre, index) => {
         pyodide: block.run ? config.pyodide : '',
     });
 
+    if (remote) {
+        remoteSession = remoteFor(block.lang, () => editor.getValue(), panel, {runButton, stopButton, resetButton});
+    }
     if (browser) {
         session = new PythonSession({
             base: config.pyodide,

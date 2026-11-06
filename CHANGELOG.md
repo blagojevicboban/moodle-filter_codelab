@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0 (2026-11-06)
+
+- Interactive programs in examples: with a CodeLab runner set in tiny_codelab, the reader types the input of C, C++,
+  Java and C# programs while they run, and can stop them. Needs tiny_codelab 1.1.0.
+
 ## 1.0.0 (2026-11-06)
 
 - First stable release. Needs tiny_codelab 1.0.0.
