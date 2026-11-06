@@ -1,0 +1,50 @@
+<div>
+  <p><strong>CodeLab Viewer: Edit and Run Program Examples</strong></p>
+  <p><em>Turns program examples inserted with tiny_codelab into code editors that readers can edit and run, in pages, books, forums and quiz text.</em></p>
+  <div>
+    <a href="https://github.com/blagojevicboban/moodle-filter_codelab/actions/workflows/ci.yml" target="_blank" rel="noreferrer noopener"><img src="https://github.com/blagojevicboban/moodle-filter_codelab/actions/workflows/ci.yml/badge.svg" alt="Moodle Plugin CI"></a>
+    <a href="https://moodle.org" target="_blank" rel="noreferrer noopener"><img src="https://img.shields.io/badge/Moodle-4.5%20to%205.3-orange.svg" alt="Moodle 4.5 to 5.3"></a>
+    <a href="https://github.com/blagojevicboban/moodle-filter_codelab" target="_blank" rel="noreferrer noopener"><img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License GPL v3"></a>
+  </div>
+
+  <hr>
+  <p><strong>What's New in v0.4.0</strong></p>
+  <ul>
+    <li><strong>Three more languages:</strong> examples in JavaScript on Node.js, Pascal and PHP. This needs tiny_codelab 0.4.0.</li>
+  </ul>
+
+  <hr>
+  <p><strong>Core features</strong></p>
+  <ul>
+    <li><strong>Run:</strong> the program is compiled and run on the Jobe server of tiny_codelab. The output appears under the editor, with an input field prefilled with the example's default input.</li>
+    <li><strong>Python in the browser:</strong> input asks in the console while the program runs. Step marks the line that runs next and shows the variables, with changed values highlighted. Stop also ends an endless loop.</li>
+    <li><strong>The reader's own copy:</strong> the reader's changes are kept in their browser, so they are still there after a reload. Restore original brings back the teacher's code.</li>
+    <li><strong>Fast pages:</strong> an editor is built only when its example comes near the screen. Lessons with dozens of examples stay quick.</li>
+    <li><strong>Copy</strong> button, and read-only examples with syntax highlighting.</li>
+  </ul>
+
+  <hr>
+  <p><strong>The CodeLab plugins</strong></p>
+  <ul>
+    <li><strong><a href="https://marketplace.moodle.com/plugins/tiny_codelab" target="_blank" rel="noreferrer noopener">CodeLab (code editor)</a></strong>: inserts examples in the TinyMCE editor. The other two plugins use its editor and runner.</li>
+    <li><strong><a href="https://marketplace.moodle.com/plugins/filter_codelab" target="_blank" rel="noreferrer noopener">CodeLab viewer (Run / Step)</a></strong> (this plugin): turns examples into code editors that readers can edit and run.</li>
+    <li><strong><a href="https://marketplace.moodle.com/plugins/qtype_codelab" target="_blank" rel="noreferrer noopener">CodeLab question type</a></strong>: programming questions graded on Jobe with tests.</li>
+  </ul>
+
+  <hr>
+  <p><strong>Requirements</strong></p>
+  <ul>
+    <li><strong>Moodle:</strong> 4.5 LTS to 5.3 (PHP as required by your Moodle version).</li>
+    <li><strong>tiny_codelab:</strong> version 0.4.0 or newer, with a Jobe server in its settings. After installing, switch the filter <strong>On</strong> in Site administration, Plugins, Filters, Manage filters.</li>
+  </ul>
+
+  <hr>
+  <p><strong>Privacy</strong></p>
+  <p>The filter stores no personal data in Moodle. The reader's copy of an example stays in the browser's local storage. Programs are run on the Jobe server of tiny_codelab, and Python can run in the reader's browser. The plugin implements the Moodle Privacy API (no personal data stored).</p>
+
+  <hr>
+  <p>Developed by <strong>Boban Blagojevi&#263;</strong>. Languages: English and Serbian (Latin and Cyrillic).<br>
+    Source, documentation and issue tracker:
+    <a href="https://github.com/blagojevicboban/moodle-filter_codelab" target="_blank" rel="noreferrer noopener">github.com/blagojevicboban/moodle-filter_codelab</a><br>
+    Licensed under the GNU GPL v3 or later.</p>
+</div>
