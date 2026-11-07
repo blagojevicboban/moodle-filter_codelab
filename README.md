@@ -11,7 +11,7 @@ code editor of VS Code ([Monaco](https://microsoft.github.io/monaco-editor/)).
 
 Languages: **C**, **C++**, **Python**, **Java**, **C#**, **JavaScript** (Node.js), **Pascal** and **PHP**.
 
-> Status: **stable** (1.3.0).
+> Status: **stable** (1.4.0).
 
 > **Important:** after installing, switch the filter on in *Site administration → Plugins → Filters → Manage filters*
 > (**CodeLab → On**). Until then, readers see the examples as plain code: they cannot edit or run them.
@@ -42,7 +42,7 @@ Languages: **C**, **C++**, **Python**, **Java**, **C#**, **JavaScript** (Node.js
 
 - Moodle 4.5 to 5.3
 - PHP 8.2+
-- [tiny_codelab](https://github.com/blagojevicboban/moodle-tiny_codelab) 1.3.0 or newer, installed first
+- [tiny_codelab](https://github.com/blagojevicboban/moodle-tiny_codelab) 1.4.0 or newer, installed first
 
 ## The CodeLab plugins
 

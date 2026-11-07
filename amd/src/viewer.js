@@ -317,6 +317,7 @@ const build = async(pre, index) => {
         label: langName,
         onRun: block.run ? doRun : null,
         pyodide: block.run ? config.pyodide : '',
+        breakpoints: modes.step,
     });
 
     session = sessionFor(modes, {block, editor, panel, vars, stdin, buttons});
