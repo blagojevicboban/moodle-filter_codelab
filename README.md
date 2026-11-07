@@ -31,6 +31,10 @@ Languages: **C**, **C++**, **Python**, **Java**, **C#**, **JavaScript** (Node.js
 - **Fast pages**: an editor is built only when its example comes near the screen. Pages with dozens of examples stay quick.
 - Examples without `codelab-run` are shown read-only, with syntax highlighting.
 
+## Manual
+
+The [CodeLab manual](https://github.com/blagojevicboban/moodle-tiny_codelab/blob/main/docs/MANUAL.md) covers the three plugins for teachers, students and administrators.
+
 ## Installation
 
 1. Install **tiny_codelab** first, then **filter_codelab** and **qtype_codelab**.
