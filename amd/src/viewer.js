@@ -29,6 +29,7 @@ import {showRunning, showResult, showError} from 'tiny_codelab/console';
 import {available as pythonAvailable} from 'tiny_codelab/python';
 import {PythonSession} from 'tiny_codelab/session';
 import {fullscreenButton} from 'tiny_codelab/fullscreen';
+import {setIcon} from 'tiny_codelab/icons';
 import {RemoteSession, runsInteractively, stepsInteractively} from 'tiny_codelab/remote';
 import {getStrings} from 'core/str';
 import {eventTypes} from 'core_filters/events';
@@ -182,7 +183,7 @@ const sessionFor = (modes, {block, editor, panel, vars, stdin, buttons}) => {
 
 /**
  * The buttons of a viewer's toolbar: Run and Restore original for examples that run, Step where it runs step by step,
- * Stop for Python in the browser and the interactive server, and Copy.
+ * Stop for Python in the browser and the interactive server, and Copy. Restore original and Copy show icons.
  *
  * @param {Object} s strings
  * @param {boolean} runs
@@ -198,8 +199,8 @@ const toolbarButtons = (s, runs, modes) => {
         runButton: runs ? button(s.run, 'run', 'btn-primary') : null,
         stepButton: modes.step ? button(s.step, 'step') : null,
         stopButton,
-        resetButton: runs ? button(s.reset, 'reset') : null,
-        copyButton: button(s.copy, 'copy'),
+        resetButton: runs ? setIcon(button('', 'reset'), 'reset', s.reset) : null,
+        copyButton: setIcon(button('', 'copy'), 'copy', s.copy),
     };
 };
 
@@ -244,7 +245,11 @@ const build = async(pre, index) => {
     const modes = runModes(block);
     const buttons = toolbarButtons(s, block.run, modes);
     const {runButton, stepButton, stopButton, resetButton, copyButton} = buttons;
-    [runButton, stepButton, stopButton, resetButton, copyButton].filter(Boolean).forEach((b) => toolbar.append(b));
+    // Run, Step and Stop on the left; the tools (restore, copy, theme, full screen) as icons on the right, so the bar
+    // fits one row on a phone.
+    const spacer = document.createElement('span');
+    spacer.className = 'filter_codelab-spacer';
+    [runButton, stepButton, stopButton, spacer, resetButton, copyButton].filter(Boolean).forEach((b) => toolbar.append(b));
     const note = document.createElement('span');
     note.className = 'filter_codelab-note';
     note.textContent = s.editedcopy;
@@ -335,9 +340,7 @@ const build = async(pre, index) => {
     });
 
     session = sessionFor(modes, {block, editor, panel, vars, stdin, buttons});
-    const themeButton = button('🌓', 'theme');
-    themeButton.title = s.toggletheme;
-    themeButton.setAttribute('aria-label', s.toggletheme);
+    const themeButton = setIcon(button('', 'theme'), 'theme', s.toggletheme);
     let currentTheme = initialTheme;
     themeButton.addEventListener('click', () => {
         currentTheme = currentTheme === 'vs-dark' ? 'vs' : 'vs-dark';
@@ -349,8 +352,8 @@ const build = async(pre, index) => {
         }
         storage('codelab_theme').set(currentTheme);
     });
-    toolbar.insertBefore(fullscreenButton({root: viewer, editor, label: s.fullscreen, exitLabel: s.exitfullscreen}), copyButton);
-    toolbar.insertBefore(themeButton, copyButton);
+    toolbar.insertBefore(themeButton, note);
+    toolbar.insertBefore(fullscreenButton({root: viewer, editor, label: s.fullscreen, exitLabel: s.exitfullscreen}), note);
     if (block.run) {
         runButton.addEventListener('click', doRun);
         resetButton.addEventListener('click', () => {
@@ -376,10 +379,8 @@ const build = async(pre, index) => {
     copyButton.addEventListener('click', async() => {
         try {
             await navigator.clipboard.writeText(editor.getValue());
-            copyButton.textContent = s.copied;
-            setTimeout(() => {
-                copyButton.textContent = s.copy;
-            }, 1500);
+            setIcon(copyButton, 'copied', s.copied);
+            setTimeout(() => setIcon(copyButton, 'copy', s.copy), 1500);
         } catch (e) {
             // No clipboard access (insecure page or denied): the reader can still select the code.
         }

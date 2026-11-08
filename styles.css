@@ -10,7 +10,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: .5rem;
+    gap: .25rem;
     padding: .375rem .5rem;
     background: #f8f9fa;
     border-bottom: 1px solid #dee2e6;
@@ -19,7 +19,11 @@
 .filter_codelab-lang {
     font-weight: bold;
     font-size: .875rem;
-    margin-right: auto;
+}
+
+/* Pushes the tool icons to the right end of the bar. */
+.filter_codelab-spacer {
+    margin-left: auto;
 }
 
 .filter_codelab-note {

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.1 (2026-11-08)
+
+- Toolbar in one row on phones: the language, Run, Step and Stop on the left; restore original, copy, theme and full
+  screen as icon buttons on the right (their names are the titles).
+- Input on phones with tiny_codelab 1.5.1: a check button and the Go key of the phone keyboard send the input line.
+- Needs tiny_codelab 1.5.1.
+
 ## 1.5.0 (2026-11-08)
 
 - Support for VS Code themes: reader theme toggle button (`🌓`) on the toolbar to switch between light and dark themes on any code example, saved in `localStorage`.
