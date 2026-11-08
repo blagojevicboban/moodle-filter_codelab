@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.0 (2026-11-08)
+
+- Support for VS Code themes: reader theme toggle button (`🌓`) on the toolbar to switch between light and dark themes on any code example, saved in `localStorage`.
+- Automatic detection of site dark mode (Moove, Boost, and system `prefers-color-scheme`).
+- Dedicated dark mode container and toolbar styling matching the VS Code dark theme.
+- Needs tiny_codelab 1.5.0.
+
 ## 1.4.0 (2026-11-07)
 
 - Debugger of Step, as in the algorithm plugins, for Python in the browser and C and C++ on the CodeLab runner
