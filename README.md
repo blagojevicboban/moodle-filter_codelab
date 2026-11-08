@@ -11,7 +11,7 @@ code editor of VS Code ([Monaco](https://microsoft.github.io/monaco-editor/)).
 
 Languages: **C**, **C++**, **Python**, **Java**, **C#**, **JavaScript** (Node.js), **Pascal** and **PHP**.
 
-> Status: **stable** (1.4.0).
+> Status: **stable** (1.5.0).
 
 > 🌐 **Live demo:** [codelab.tsp.edu.rs](https://codelab.tsp.edu.rs) (look around as a guest, or use `teacher` / `student` with password `Demo-2026`; reset every night)
 
@@ -20,6 +20,7 @@ Languages: **C**, **C++**, **Python**, **Java**, **C#**, **JavaScript** (Node.js
 
 ## Features
 
+- **Theme Toggle (🌓)**: Readers can switch between light and dark VS Code themes directly on the block.
 - **Run**: the program is compiled and run on the [Jobe](https://github.com/trampgeek/jobe) server of tiny_codelab.
   The output appears under the editor. An input field holds the input of the program, prefilled with the example's
   default input.
