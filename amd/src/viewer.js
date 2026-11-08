@@ -21,9 +21,9 @@
  * @copyright  2026 Boban Blagojević
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-import {languages, setupLanguages} from 'tiny_codelab/common';
+import {languages, setupLanguages, defaultTheme} from 'tiny_codelab/common';
 import {readBlock, stdinOf, setupOf} from 'tiny_codelab/embed';
-import {createEditor} from 'tiny_codelab/monaco';
+import {createEditor, resolveTheme} from 'tiny_codelab/monaco';
 import {run} from 'tiny_codelab/runner';
 import {showRunning, showResult, showError} from 'tiny_codelab/console';
 import {available as pythonAvailable} from 'tiny_codelab/python';
@@ -56,7 +56,7 @@ let config = {pyodide: '', interactive: []};
 const loadStrings = async() => {
     if (!strings) {
         const keys = ['run', 'reset', 'copy', 'copied', 'input', 'output', 'editedcopy', 'step', 'stop', 'fullscreen',
-            'exitfullscreen']
+            'exitfullscreen', 'toggletheme']
             .concat(Object.keys(languages).map((lang) => `lang_${lang}`));
         const values = await getStrings(keys.map((key) => ({key, component: 'tiny_codelab'})));
         strings = Object.fromEntries(keys.map((key, i) => [key, values[i]]));
@@ -217,8 +217,21 @@ const build = async(pre, index) => {
     const store = storage(`${STORE}:${window.location.pathname}${window.location.search}:${index}:${hash(block.code)}`);
     const saved = block.run ? store.get() : null;
 
+    const userTheme = storage('codelab_theme').get();
+    let initialTheme = 'vs';
+    if (block.theme && block.theme !== defaultTheme) {
+        initialTheme = resolveTheme(block.theme);
+    } else if (userTheme && (userTheme === 'vs' || userTheme === 'vs-dark' || userTheme === 'hc-black')) {
+        initialTheme = userTheme;
+    } else {
+        initialTheme = resolveTheme(config.theme || 'auto');
+    }
+
     const viewer = document.createElement('div');
     viewer.className = 'filter_codelab-viewer';
+    if (initialTheme === 'vs-dark' || initialTheme === 'hc-black') {
+        viewer.classList.add('filter_codelab-dark');
+    }
     viewer.setAttribute('role', 'group');
     viewer.setAttribute('aria-label', langName);
 
@@ -310,6 +323,7 @@ const build = async(pre, index) => {
     editor = await createEditor(host, {
         value: saved === null ? block.code : saved,
         lang: block.lang,
+        theme: initialTheme,
         readOnly: !block.run,
         noassist: block.noassist,
         minLines: 3,
@@ -321,7 +335,22 @@ const build = async(pre, index) => {
     });
 
     session = sessionFor(modes, {block, editor, panel, vars, stdin, buttons});
+    const themeButton = button('🌓', 'theme');
+    themeButton.title = s.toggletheme;
+    themeButton.setAttribute('aria-label', s.toggletheme);
+    let currentTheme = initialTheme;
+    themeButton.addEventListener('click', () => {
+        currentTheme = currentTheme === 'vs-dark' ? 'vs' : 'vs-dark';
+        editor.setTheme(currentTheme);
+        if (currentTheme === 'vs-dark' || currentTheme === 'hc-black') {
+            viewer.classList.add('filter_codelab-dark');
+        } else {
+            viewer.classList.remove('filter_codelab-dark');
+        }
+        storage('codelab_theme').set(currentTheme);
+    });
     toolbar.insertBefore(fullscreenButton({root: viewer, editor, label: s.fullscreen, exitLabel: s.exitfullscreen}), copyButton);
+    toolbar.insertBefore(themeButton, copyButton);
     if (block.run) {
         runButton.addEventListener('click', doRun);
         resetButton.addEventListener('click', () => {

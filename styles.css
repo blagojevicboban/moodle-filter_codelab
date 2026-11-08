@@ -170,3 +170,72 @@ pre.codelab-stdin::before {
     margin-bottom: .25rem;
     color: #475569;
 }
+
+/* Dark theme viewer container and toolbar */
+.filter_codelab-viewer.filter_codelab-dark {
+    border-color: #3c3c3c;
+    background: #1e1e1e;
+    color: #cccccc;
+}
+
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-toolbar {
+    background: #252526;
+    border-bottom: 1px solid #3c3c3c;
+    color: #cccccc;
+}
+
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-note {
+    color: #9d9d9d;
+}
+
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-stdin {
+    border-top: 1px solid #3c3c3c;
+    background: #1e1e1e;
+    color: #cccccc;
+}
+
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-stdin textarea {
+    background: #252526;
+    color: #d4d4d4;
+    border-color: #3c3c3c;
+}
+
+/* Dark theme cards for pre.codelab */
+pre.codelab.codelab-theme-vs-dark {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    border-color: #3c3c3c;
+    border-left-color: #007acc;
+}
+
+pre.codelab.codelab-theme-vs-dark::before {
+    background: #252526;
+    border-bottom: 1px solid #3c3c3c;
+    color: #cccccc;
+}
+
+pre.codelab.codelab-theme-vs-dark.codelab-run::after {
+    background: #1f3a52;
+    color: #4fc1ff;
+    border-color: #264f78;
+}
+
+/* High Contrast Dark theme cards for pre.codelab */
+pre.codelab.codelab-theme-hc-black {
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #6fc3df;
+    border-left-color: #6fc3df;
+}
+
+pre.codelab.codelab-theme-hc-black::before {
+    background: #0c141f;
+    border-bottom: 1px solid #6fc3df;
+    color: #6fc3df;
+}
+
+pre.codelab.codelab-theme-hc-black.codelab-run::after {
+    background: #000000;
+    color: #6fc3df;
+    border-color: #6fc3df;
+}
