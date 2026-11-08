@@ -50,3 +50,123 @@
 pre.codelab-setup {
     display: none;
 }
+
+/* CodeLab block in Tiny editor and reading view (Light IDE / GitHub theme) */
+pre.codelab {
+    position: relative;
+    display: block;
+    margin: 1.5rem 0;
+    padding: 2.75rem 1.25rem 1.25rem 1.25rem;
+    background-color: #f8fafc;
+    color: #1e293b;
+    border: 1px solid #cbd5e1;
+    border-left: 4px solid #0f6cbf;
+    border-radius: .375rem;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: .875rem;
+    line-height: 1.55;
+    tab-size: 4;
+    overflow-x: auto;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+    white-space: pre;
+    cursor: pointer;
+}
+
+pre.codelab:hover {
+    border-color: #94a3b8;
+    border-left-color: #0f6cbf;
+    box-shadow: 0 2px 8px rgba(15, 108, 191, .15);
+}
+
+/* Header bar on top of the code card */
+pre.codelab::before {
+    content: "🚀 CodeLab";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2rem;
+    line-height: 2rem;
+    padding: 0 .75rem;
+    background: #f1f5f9;
+    border-bottom: 1px solid #cbd5e1;
+    color: #475569;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .02em;
+}
+
+pre.codelab.codelab-lang-c::before {
+    content: "🚀 CodeLab • C";
+}
+
+pre.codelab.codelab-lang-cpp::before {
+    content: "🚀 CodeLab • C++";
+}
+
+pre.codelab.codelab-lang-python::before {
+    content: "🚀 CodeLab • Python";
+}
+
+pre.codelab.codelab-lang-java::before {
+    content: "🚀 CodeLab • Java";
+}
+
+pre.codelab.codelab-lang-csharp::before {
+    content: "🚀 CodeLab • C#";
+}
+
+pre.codelab.codelab-lang-javascript::before {
+    content: "🚀 CodeLab • JavaScript";
+}
+
+pre.codelab.codelab-lang-pascal::before {
+    content: "🚀 CodeLab • Pascal";
+}
+
+pre.codelab.codelab-lang-php::before {
+    content: "🚀 CodeLab • PHP";
+}
+
+pre.codelab.codelab-lang-mysql::before {
+    content: "🚀 CodeLab • SQL (MySQL)";
+}
+
+pre.codelab.codelab-run::after {
+    content: "▶ Run";
+    position: absolute;
+    top: .35rem;
+    right: .75rem;
+    padding: .1rem .45rem;
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+    border-radius: .25rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: .7rem;
+    font-weight: 600;
+    line-height: 1.2;
+    pointer-events: none;
+}
+
+pre.codelab-stdin {
+    margin-top: -1.25rem;
+    margin-bottom: 1.5rem;
+    padding: .5rem .75rem;
+    background: #f1f5f9;
+    border: 1px dashed #cbd5e1;
+    border-top: none;
+    border-bottom-left-radius: .375rem;
+    border-bottom-right-radius: .375rem;
+    font-size: .8125rem;
+    color: #64748b;
+}
+
+pre.codelab-stdin::before {
+    content: "⌨ Standard Input (stdin):";
+    display: block;
+    font-weight: 600;
+    margin-bottom: .25rem;
+    color: #475569;
+}
