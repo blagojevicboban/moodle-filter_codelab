@@ -32,6 +32,7 @@ import {fullscreenButton} from 'tiny_codelab/fullscreen';
 import {setIcon} from 'tiny_codelab/icons';
 import {RemoteSession, runsInteractively, stepsInteractively} from 'tiny_codelab/remote';
 import {openComplexity} from 'tiny_codelab/complexity';
+import {classPanel, loadClassStrings, sharer, statusOf} from 'filter_codelab/classwork';
 import {getStrings} from 'core/str';
 import {eventTypes} from 'core_filters/events';
 
@@ -49,6 +50,8 @@ let strings = null;
 let counter = 0;
 // Settings of the in-browser runtimes (tiny_codelab\local\runtime::config()).
 let config = {pyodide: '', interactive: []};
+// The class view: the context of the page, whether the user sends their copies and whether they see the class.
+let work = {contextid: 0, share: false, view: false};
 
 /**
  * Strings of the viewer, loaded once.
@@ -209,6 +212,43 @@ const complexityPanel = (toggle, after, editor) => {
         openComplexity(panel, {base: config.pyodide, code: () => editor.getValue(),
             onClose: () => toggle.setAttribute('aria-expanded', 'false')});
     });
+};
+
+/**
+ * The class view of an example: a student sends the changed copy and the result of each run; a teacher gets the Class
+ * button and panel (filter_codelab/classwork).
+ *
+ * @param {Object} block
+ * @param {number} index place of the example on the page
+ * @param {Object} parts
+ * @param {Object} parts.editor
+ * @param {?HTMLElement} parts.panel console
+ * @param {HTMLElement} parts.toolbar
+ * @param {HTMLElement} parts.before the toolbar element the Class button goes before
+ * @param {HTMLElement} parts.host the editor's element; the panel goes after it
+ */
+const classWork = async(block, index, {editor, panel, toolbar, before, host}) => {
+    if (!block.run || !work.contextid || (!work.share && !work.view)) {
+        return;
+    }
+    const workkey = `w${index}_${hash(block.code)}`;
+    if (work.share) {
+        const send = sharer(work, workkey, block.code);
+        editor.onChange((value) => send(value));
+        // The result of each run, when the console shows its end.
+        new MutationObserver(() => {
+            const status = statusOf(panel);
+            if (status) {
+                send(editor.getValue(), status);
+            }
+        }).observe(panel, {childList: true, subtree: true, attributes: true, attributeFilter: ['class']});
+    }
+    if (work.view) {
+        const cs = await loadClassStrings();
+        const toggle = button(cs.classwork, 'classwork');
+        toolbar.insertBefore(toggle, before);
+        await classPanel(toggle, host, work, workkey, (code) => editor.setValue(code));
+    }
 };
 
 /**
@@ -374,6 +414,7 @@ const build = async(pre, index) => {
 
     session = sessionFor(modes, {block, editor, panel, vars, stdin, buttons});
     complexityPanel(complexityButton, vars, editor);
+    classWork(block, index, {editor, panel, toolbar, before: spacer, host});
     const themeButton = setIcon(button('', 'theme'), 'theme', s.toggletheme);
     let currentTheme = initialTheme;
     themeButton.addEventListener('click', () => {
@@ -459,13 +500,16 @@ const prepare = (root) => {
  * Turn the CodeLab blocks of the page into editors.
  *
  * @param {Object} [settings] settings of the in-browser runtimes: {pyodide: address of Pyodide, or ''}
+ * @param {?{contextid: number, share: boolean, view: boolean}} [classwork] the class view: the page's context, whether the
+ *     user sends their copies (students) and whether they see the class (teachers)
  */
-export const init = (settings) => {
+export const init = (settings, classwork = null) => {
     if (initialised) {
         return;
     }
     initialised = true;
     config = Object.assign(config, settings || {});
+    work = Object.assign(work, classwork || {});
     observer = new IntersectionObserver(onVisible, {rootMargin: MARGIN});
     prepare(document);
     // Content added later (for example a forum post or a question in a modal) is filtered again.

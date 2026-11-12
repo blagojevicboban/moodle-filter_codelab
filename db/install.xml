@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="filter/codelab/db" VERSION="20261120" COMMENT="XMLDB file for Moodle filter/codelab"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="filter_codelab_work" COMMENT="The last copy of an example each student changed, for the class view of the teacher.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="contextid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Context of the page with the example."/>
+        <FIELD NAME="workkey" TYPE="char" LENGTH="64" NOTNULL="true" SEQUENCE="false" COMMENT="Which example of the page (its place and a hash of its code)."/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The student."/>
+        <FIELD NAME="code" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="The student's program."/>
+        <FIELD NAME="status" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="" SEQUENCE="false" COMMENT="Result of the last run: ok, error, or empty when not run since the last change."/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="When the copy was saved."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="contextid" TYPE="foreign" FIELDS="contextid" REFTABLE="context" REFFIELDS="id"/>
+        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="contextid-workkey-userid" UNIQUE="true" FIELDS="contextid, workkey, userid"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>

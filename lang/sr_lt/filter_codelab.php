@@ -24,5 +24,24 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['classwork'] = 'Razred';
+$string['classworkclose'] = 'Zatvori';
+$string['classworkcount'] = 'Kopije učenika: {$a}';
+$string['classworkempty'] = 'Nijedan učenik još nije menjao ovaj primer.';
+$string['classworkerror'] = 'greška';
+$string['classworkfull'] = 'Prikaži uvećano';
+$string['classworknotrun'] = 'nije pokrenut';
+$string['classworkok'] = 'radi';
+$string['classworkrefresh'] = 'Osveži';
+$string['classworkuse'] = 'Otvori u mom editoru';
+$string['codelab:sharework'] = 'Slanje svoje kopije primera nastavniku (prikaz razreda)';
+$string['codelab:viewclasswork'] = 'Pregled kopija primera koje su učenici menjali (prikaz razreda)';
 $string['filtername'] = 'CodeLab';
-$string['privacy:metadata'] = 'Filter CodeLab ne čuva lične podatke na serveru; učenikova izmenjena kopija ostaje u pregledaču.';
+$string['privacy:metadata'] = 'Filter CodeLab na serveru čuva samo kopije za prikaz razreda (ispod); učenikova izmenjena kopija ostaje i u pregledaču.';
+$string['privacy:metadata:work'] = 'Poslednja kopija primera koju je svaki učenik menjao, da bi nastavnik video rad razreda dok traje.';
+$string['privacy:metadata:work:code'] = 'Program učenika.';
+$string['privacy:metadata:work:contextid'] = 'Stranica sa primerom.';
+$string['privacy:metadata:work:status'] = 'Da li se poslednje pokretanje kopije dobro završilo.';
+$string['privacy:metadata:work:timemodified'] = 'Kada je kopija sačuvana.';
+$string['privacy:metadata:work:userid'] = 'Učenik.';
+$string['privacy:path'] = 'CodeLab primeri';

@@ -243,3 +243,112 @@ pre.codelab.codelab-theme-hc-black.codelab-run::after {
     color: #6fc3df;
     border-color: #6fc3df;
 }
+
+/* The class view (filter_codelab/classwork): cards of the students' copies and one copy shown large. */
+.filter_codelab-class {
+    margin: .5rem 0;
+    padding: .5rem;
+    border: 1px solid #dee2e6;
+    border-radius: .25rem;
+    background: #fff;
+    color: #1d2125;
+}
+
+.filter_codelab-class-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: .5rem;
+}
+
+.filter_codelab-class-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: .5rem;
+}
+
+.filter_codelab-class-card {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+    min-width: 0;
+    padding: .5rem;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    background: #f8f9fa;
+}
+
+.filter_codelab-class-cardhead {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .35rem;
+}
+
+.filter_codelab-class-time {
+    margin-left: auto;
+    color: #6a737b;
+    font-size: .8rem;
+}
+
+.filter_codelab-class-ok {
+    background: #357a32;
+    color: #fff;
+}
+
+.filter_codelab-class-error {
+    background: #ca3120;
+    color: #fff;
+}
+
+.filter_codelab-class-notrun {
+    background: #6a737b;
+    color: #fff;
+}
+
+.filter_codelab-class-code {
+    max-height: 14rem;
+    margin: 0;
+    padding: .35rem;
+    overflow: auto;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    font-size: .75rem;
+}
+
+.filter_codelab-class-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem;
+}
+
+.filter_codelab-class-full {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background: #fff;
+    color: #1d2125;
+}
+
+.filter_codelab-class-fullhead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: .5rem;
+    font-size: 1.5rem;
+}
+
+.filter_codelab-class-fullcode {
+    flex: 1 1 auto;
+    margin: 0;
+    padding: 1rem;
+    overflow: auto;
+    border: 1px solid #dee2e6;
+    font-size: 1.6rem;
+    line-height: 1.4;
+}

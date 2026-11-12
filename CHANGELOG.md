@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.10.0 (2026-11-12)
+
+- Class view, as in the algorithm plugins: a student's changed copy of an example and the result of its last run
+  (runs, error) are kept on the server (table filter_codelab_work, web service filter_codelab_save_work); the original
+  code removes the copy. Teachers get a Class button: cards of the students' copies with their name, result and code,
+  refreshed every 20 seconds while open, Show large for the projector, and Open in my editor to run one.
+- Capabilities filter/codelab:sharework (students) and filter/codelab:viewclasswork (teachers; in separate groups only
+  their own groups unless they see all groups), web service filter_codelab_get_class_work, a Privacy API provider
+  (export and delete of the copies), PHPUnit tests.
+
 ## 1.8.0 (2026-11-12)
 
 - Complexity button for Python examples that run in the browser: lines run against n beside n, n log n and n², the

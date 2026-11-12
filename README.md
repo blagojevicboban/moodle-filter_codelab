@@ -33,6 +33,12 @@ Languages: **C**, **C++**, **Python**, **Java**, **C#**, **JavaScript** (Node.js
 - **The reader's own copy**: the reader's changes are kept in their browser, so they are still there after a reload.
 - **Fast pages**: an editor is built only when its example comes near the screen. Pages with dozens of examples stay quick.
 - Examples without `codelab-run` are shown read-only, with syntax highlighting.
+- **Class view**: a student's changed copy of an example and the result of its last run go to the server; a teacher
+  clicks **Class** and sees the copies of the students as cards (name, *runs* / *error* / *not run*, the code),
+  refreshed every 20 seconds, with **Show large** for the projector and **Open in my editor** to run one. Capabilities
+  `filter/codelab:sharework` (students) and `filter/codelab:viewclasswork` (teachers); in separate groups a teacher
+  sees only their own groups.
+- **Complexity** (Python): lines run against n beside n, n log n and n², with a kept version for comparison.
 
 ## Manual
 
@@ -61,7 +67,9 @@ The [CodeLab manual](https://github.com/blagojevicboban/moodle-tiny_codelab/blob
 
 ## Privacy
 
-The filter stores no personal data in Moodle. The reader's copy of an example stays in their browser (localStorage).
+For the class view the filter keeps the last changed copy of an example of each student, with the result of its last
+run and the time (table `filter_codelab_work`); the original code removes it. The Privacy API exports and deletes these
+copies. The reader's copy of an example also stays in their browser (localStorage).
 Programs are run on the Jobe server of tiny_codelab. Python runs in the reader's browser; see the tiny_codelab README.
 
 ## License

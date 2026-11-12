@@ -46,7 +46,14 @@ class text_filter extends \core_filters\text_filter {
         if (!is_string($text) || !preg_match('/<pre[^>]*\bclass="[^"]*\bcodelab\b/', $text)) {
             return $text;
         }
-        $PAGE->requires->js_call_amd('filter_codelab/viewer', 'init', [runtime::config()]);
+        // The class view: students send their changed copies of the examples, teachers see the copies of the class.
+        $context = $PAGE->context;
+        $work = ['contextid' => $context->id, 'share' => false, 'view' => false];
+        if (isloggedin() && !isguestuser() && $context->get_course_context(false)) {
+            $work['share'] = has_capability('filter/codelab:sharework', $context);
+            $work['view'] = has_capability('filter/codelab:viewclasswork', $context);
+        }
+        $PAGE->requires->js_call_amd('filter_codelab/viewer', 'init', [runtime::config(), $work]);
         return $text;
     }
 }
