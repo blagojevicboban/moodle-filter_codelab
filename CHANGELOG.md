@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.11.0 (2026-11-12)
+
+- Flowchart: with the algorithm plugins on the site (tiny_algorithm 2.13 or newer), Python examples get a Flowchart
+  button that draws the code of the editor as a flowchart with the algorithm runner (Run, Step, Back, the variables,
+  the trace table, the complexity chart and the code in other languages). Lines that are not drawn as blocks are
+  named. The modules of the algorithm plugins are loaded only when the button is used. Needs tiny_codelab 1.11.0.
+
 ## 1.10.1 (2026-11-12)
 
 - The status field of the class view table has no empty default, which the database layer refuses on a new install

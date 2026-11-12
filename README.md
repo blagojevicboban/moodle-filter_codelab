@@ -39,6 +39,8 @@ Languages: **C**, **C++**, **Python**, **Java**, **C#**, **JavaScript** (Node.js
   `filter/codelab:sharework` (students) and `filter/codelab:viewclasswork` (teachers); in separate groups a teacher
   sees only their own groups.
 - **Complexity** (Python): lines run against n beside n, n log n and n², with a kept version for comparison.
+- **Flowchart** (Python, when the site has the algorithm plugins, tiny_algorithm 2.13 or newer): the code of the editor
+  drawn as a flowchart that runs step by step, with its variables, trace table and the code in other languages.
 
 ## Manual
 

@@ -352,3 +352,13 @@ pre.codelab.codelab-theme-hc-black.codelab-run::after {
     font-size: 1.6rem;
     line-height: 1.4;
 }
+
+/* The flowchart of a Python example (tiny_algorithm), under the editor. */
+.filter_codelab-flowchart {
+    margin: .5rem 0;
+    padding: .5rem;
+    border: 1px solid #dee2e6;
+    border-radius: .25rem;
+    background: #fff;
+    color: #1d2125;
+}

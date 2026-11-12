@@ -49,7 +49,7 @@ let observer = null;
 let strings = null;
 let counter = 0;
 // Settings of the in-browser runtimes (tiny_codelab\local\runtime::config()).
-let config = {pyodide: '', interactive: []};
+let config = {pyodide: '', interactive: [], flowchart: false};
 // The class view: the context of the page, whether the user sends their copies and whether they see the class.
 let work = {contextid: 0, share: false, view: false};
 
@@ -61,7 +61,7 @@ let work = {contextid: 0, share: false, view: false};
 const loadStrings = async() => {
     if (!strings) {
         const keys = ['run', 'reset', 'copy', 'copied', 'input', 'output', 'editedcopy', 'step', 'stop', 'fullscreen',
-            'exitfullscreen', 'toggletheme', 'complexity']
+            'exitfullscreen', 'toggletheme', 'complexity', 'flowchart', 'flowchartwarnings', 'flowchartfailed']
             .concat(Object.keys(languages).map((lang) => `lang_${lang}`));
         const values = await getStrings(keys.map((key) => ({key, component: 'tiny_codelab'})));
         strings = Object.fromEntries(keys.map((key, i) => [key, values[i]]));
@@ -134,14 +134,16 @@ const button = (text, action, style = 'btn-secondary') => {
  * How an example runs: Python in the browser, or on the interactive server (C and C++ also step by step), or on Jobe.
  *
  * @param {Object} block
- * @returns {{browser: boolean, remote: boolean, step: boolean}}
+ * @returns {{browser: boolean, remote: boolean, step: boolean, flowchart: boolean}}
  */
 const runModes = (block) => {
     // Python runs in the browser when it can: input() asks while the program runs, Step goes line by line.
     const browser = block.run && block.lang === 'python' && config.pyodide !== '' && pythonAvailable();
     // C, C++, Java and C# run on the interactive server when the site has one: the input is typed while they run.
     const remote = block.run && runsInteractively(config.interactive, block.lang);
-    return {browser, remote, step: browser || (remote && stepsInteractively(config.interactive, block.lang))};
+    // Python as a flowchart, drawn by the algorithm plugins when the site has them (tiny_algorithm 2.13 or newer).
+    const flowchart = block.lang === 'python' && Boolean(config.flowchart);
+    return {browser, remote, step: browser || (remote && stepsInteractively(config.interactive, block.lang)), flowchart};
 };
 
 /**
@@ -215,6 +217,59 @@ const complexityPanel = (toggle, after, editor) => {
 };
 
 /**
+ * The flowchart of a Python example (tiny_algorithm: Python to diagram, and its runner with Step, the watch and the
+ * generated code), under the editor; made again from the current code each time it is opened. The modules of the
+ * algorithm plugins are loaded only then, so CodeLab works without them.
+ *
+ * @param {?HTMLButtonElement} toggle none when the example is not Python or the site has no tiny_algorithm
+ * @param {HTMLElement} after the panel goes after this element
+ * @param {Object} editor
+ * @param {Object<string, string>} s strings
+ */
+const flowchartPanel = (toggle, after, editor, s) => {
+    if (!toggle) {
+        return;
+    }
+    const panel = document.createElement('div');
+    panel.className = 'filter_codelab-flowchart';
+    panel.hidden = true;
+    after.after(panel);
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.addEventListener('click', async() => {
+        if (!panel.hidden) {
+            panel.replaceChildren();
+            panel.hidden = true;
+            toggle.setAttribute('aria-expanded', 'false');
+            return;
+        }
+        panel.hidden = false;
+        toggle.setAttribute('aria-expanded', 'true');
+        try {
+            const [codeimport, runner, langstrings] = await Promise.all([import('tiny_algorithm/codeimport'),
+                import('tiny_algorithm/runner'), import('tiny_algorithm/langstrings')]);
+            await langstrings.load();
+            const {program, warnings} = codeimport.importPython(editor.getValue(), {name: 'Python'});
+            panel.replaceChildren();
+            if (warnings.length) {
+                const note = document.createElement('div');
+                note.className = 'filter_codelab-flowchart-note small mb-1';
+                note.textContent = s.flowchartwarnings.replace('{$a}', warnings.map((w) => w.line).join(', '));
+                panel.append(note);
+            }
+            const host = document.createElement('div');
+            host.className = 'tiny_algorithm-viewer-host';
+            panel.append(host);
+            new runner.AlgorithmRunner(host, program, {lang: document.documentElement.lang});
+        } catch (e) {
+            const error = document.createElement('div');
+            error.className = 'text-danger small';
+            error.textContent = s.flowchartfailed.replace('{$a}', e?.message || String(e));
+            panel.replaceChildren(error);
+        }
+    });
+};
+
+/**
  * The class view of an example: a student sends the changed copy and the result of each run; a teacher gets the Class
  * button and panel (filter_codelab/classwork).
  *
@@ -270,6 +325,7 @@ const toolbarButtons = (s, runs, modes) => {
         stepButton: modes.step ? button(s.step, 'step') : null,
         // Lines run against n (tiny_codelab/complexity): Python in the browser counts them.
         complexityButton: modes.browser ? button(s.complexity, 'complexity') : null,
+        flowchartButton: modes.flowchart ? button(s.flowchart, 'flowchart') : null,
         stopButton,
         resetButton: runs ? setIcon(button('', 'reset'), 'reset', s.reset) : null,
         copyButton: setIcon(button('', 'copy'), 'copy', s.copy),
@@ -316,12 +372,12 @@ const build = async(pre, index) => {
     toolbar.append(badge);
     const modes = runModes(block);
     const buttons = toolbarButtons(s, block.run, modes);
-    const {runButton, stepButton, complexityButton, stopButton, resetButton, copyButton} = buttons;
+    const {runButton, stepButton, complexityButton, flowchartButton, stopButton, resetButton, copyButton} = buttons;
     // Run, Step and Stop on the left; the tools (restore, copy, theme, full screen) as icons on the right, so the bar
     // fits one row on a phone.
     const spacer = document.createElement('span');
     spacer.className = 'filter_codelab-spacer';
-    [runButton, stepButton, complexityButton, stopButton, spacer, resetButton, copyButton].filter(Boolean)
+    [runButton, stepButton, complexityButton, flowchartButton, stopButton, spacer, resetButton, copyButton].filter(Boolean)
         .forEach((b) => toolbar.append(b));
     const note = document.createElement('span');
     note.className = 'filter_codelab-note';
@@ -415,6 +471,7 @@ const build = async(pre, index) => {
     session = sessionFor(modes, {block, editor, panel, vars, stdin, buttons});
     complexityPanel(complexityButton, vars, editor);
     classWork(block, index, {editor, panel, toolbar, before: spacer, host});
+    flowchartPanel(flowchartButton, host, editor, s);
     const themeButton = setIcon(button('', 'theme'), 'theme', s.toggletheme);
     let currentTheme = initialTheme;
     themeButton.addEventListener('click', () => {
