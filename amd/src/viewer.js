@@ -31,6 +31,7 @@ import {PythonSession} from 'tiny_codelab/session';
 import {fullscreenButton} from 'tiny_codelab/fullscreen';
 import {setIcon} from 'tiny_codelab/icons';
 import {RemoteSession, runsInteractively, stepsInteractively} from 'tiny_codelab/remote';
+import {openComplexity} from 'tiny_codelab/complexity';
 import {getStrings} from 'core/str';
 import {eventTypes} from 'core_filters/events';
 
@@ -57,7 +58,7 @@ let config = {pyodide: '', interactive: []};
 const loadStrings = async() => {
     if (!strings) {
         const keys = ['run', 'reset', 'copy', 'copied', 'input', 'output', 'editedcopy', 'step', 'stop', 'fullscreen',
-            'exitfullscreen', 'toggletheme']
+            'exitfullscreen', 'toggletheme', 'complexity']
             .concat(Object.keys(languages).map((lang) => `lang_${lang}`));
         const values = await getStrings(keys.map((key) => ({key, component: 'tiny_codelab'})));
         strings = Object.fromEntries(keys.map((key, i) => [key, values[i]]));
@@ -182,6 +183,35 @@ const sessionFor = (modes, {block, editor, panel, vars, stdin, buttons}) => {
 };
 
 /**
+ * The complexity panel under the variables, opened and closed by its button.
+ *
+ * @param {?HTMLButtonElement} toggle none when the example has no complexity (not Python in the browser)
+ * @param {HTMLElement} after the panel is put after this element
+ * @param {Object} editor
+ */
+const complexityPanel = (toggle, after, editor) => {
+    if (!toggle) {
+        return;
+    }
+    const panel = document.createElement('div');
+    panel.className = 'tiny_codelab-cx';
+    panel.hidden = true;
+    after.after(panel);
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.addEventListener('click', () => {
+        if (!panel.hidden) {
+            panel.replaceChildren();
+            panel.hidden = true;
+            toggle.setAttribute('aria-expanded', 'false');
+            return;
+        }
+        toggle.setAttribute('aria-expanded', 'true');
+        openComplexity(panel, {base: config.pyodide, code: () => editor.getValue(),
+            onClose: () => toggle.setAttribute('aria-expanded', 'false')});
+    });
+};
+
+/**
  * The buttons of a viewer's toolbar: Run and Restore original for examples that run, Step where it runs step by step,
  * Stop for Python in the browser and the interactive server, and Copy. Restore original and Copy show icons.
  *
@@ -198,6 +228,8 @@ const toolbarButtons = (s, runs, modes) => {
     return {
         runButton: runs ? button(s.run, 'run', 'btn-primary') : null,
         stepButton: modes.step ? button(s.step, 'step') : null,
+        // Lines run against n (tiny_codelab/complexity): Python in the browser counts them.
+        complexityButton: modes.browser ? button(s.complexity, 'complexity') : null,
         stopButton,
         resetButton: runs ? setIcon(button('', 'reset'), 'reset', s.reset) : null,
         copyButton: setIcon(button('', 'copy'), 'copy', s.copy),
@@ -244,12 +276,13 @@ const build = async(pre, index) => {
     toolbar.append(badge);
     const modes = runModes(block);
     const buttons = toolbarButtons(s, block.run, modes);
-    const {runButton, stepButton, stopButton, resetButton, copyButton} = buttons;
+    const {runButton, stepButton, complexityButton, stopButton, resetButton, copyButton} = buttons;
     // Run, Step and Stop on the left; the tools (restore, copy, theme, full screen) as icons on the right, so the bar
     // fits one row on a phone.
     const spacer = document.createElement('span');
     spacer.className = 'filter_codelab-spacer';
-    [runButton, stepButton, stopButton, spacer, resetButton, copyButton].filter(Boolean).forEach((b) => toolbar.append(b));
+    [runButton, stepButton, complexityButton, stopButton, spacer, resetButton, copyButton].filter(Boolean)
+        .forEach((b) => toolbar.append(b));
     const note = document.createElement('span');
     note.className = 'filter_codelab-note';
     note.textContent = s.editedcopy;
@@ -340,6 +373,7 @@ const build = async(pre, index) => {
     });
 
     session = sessionFor(modes, {block, editor, panel, vars, stdin, buttons});
+    complexityPanel(complexityButton, vars, editor);
     const themeButton = setIcon(button('', 'theme'), 'theme', s.toggletheme);
     let currentTheme = initialTheme;
     themeButton.addEventListener('click', () => {

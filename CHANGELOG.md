@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.0 (2026-11-12)
+
+- Complexity button for Python examples that run in the browser: lines run against n beside n, n log n and n², the
+  growth named, a second version kept for comparison (tiny_codelab/complexity). Needs tiny_codelab 1.8.0.
+- With tiny_codelab 1.6 and 1.7 the Step panel of the viewer also has Step back, the timeline and the memory view.
+
 ## 1.5.1 (2026-11-08)
 
 - Toolbar in one row on phones: the language, Run, Step and Stop on the left; restore original, copy, theme and full
