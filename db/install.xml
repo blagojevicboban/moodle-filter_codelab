@@ -11,7 +11,7 @@
         <FIELD NAME="workkey" TYPE="char" LENGTH="64" NOTNULL="true" SEQUENCE="false" COMMENT="Which example of the page (its place and a hash of its code)."/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The student."/>
         <FIELD NAME="code" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="The student's program."/>
-        <FIELD NAME="status" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="" SEQUENCE="false" COMMENT="Result of the last run: ok, error, or empty when not run since the last change."/>
+        <FIELD NAME="status" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Result of the last run: ok, error, or empty when not run since the last change."/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="When the copy was saved."/>
       </FIELDS>
       <KEYS>

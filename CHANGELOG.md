@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.10.1 (2026-11-12)
+
+- The status field of the class view table has no empty default, which the database layer refuses on a new install
+  (1.10.0 failed to install cleanly in CI).
+
 ## 1.10.0 (2026-11-12)
 
 - Class view, as in the algorithm plugins: a student's changed copy of an example and the result of its last run
