@@ -84,7 +84,7 @@ pre.codelab:hover {
 
 /* Header bar on top of the code card */
 pre.codelab::before {
-    content: "🚀 CodeLab";
+    content: "CodeLab";
     position: absolute;
     top: 0;
     left: 0;
@@ -102,39 +102,39 @@ pre.codelab::before {
 }
 
 pre.codelab.codelab-lang-c::before {
-    content: "🚀 CodeLab • C";
+    content: "CodeLab • C";
 }
 
 pre.codelab.codelab-lang-cpp::before {
-    content: "🚀 CodeLab • C++";
+    content: "CodeLab • C++";
 }
 
 pre.codelab.codelab-lang-python::before {
-    content: "🚀 CodeLab • Python";
+    content: "CodeLab • Python";
 }
 
 pre.codelab.codelab-lang-java::before {
-    content: "🚀 CodeLab • Java";
+    content: "CodeLab • Java";
 }
 
 pre.codelab.codelab-lang-csharp::before {
-    content: "🚀 CodeLab • C#";
+    content: "CodeLab • C#";
 }
 
 pre.codelab.codelab-lang-javascript::before {
-    content: "🚀 CodeLab • JavaScript";
+    content: "CodeLab • JavaScript";
 }
 
 pre.codelab.codelab-lang-pascal::before {
-    content: "🚀 CodeLab • Pascal";
+    content: "CodeLab • Pascal";
 }
 
 pre.codelab.codelab-lang-php::before {
-    content: "🚀 CodeLab • PHP";
+    content: "CodeLab • PHP";
 }
 
 pre.codelab.codelab-lang-mysql::before {
-    content: "🚀 CodeLab • SQL (MySQL)";
+    content: "CodeLab • SQL (MySQL)";
 }
 
 pre.codelab.codelab-run::after {
@@ -168,7 +168,7 @@ pre.codelab-stdin {
 }
 
 pre.codelab-stdin::before {
-    content: "⌨ Standard Input (stdin):";
+    content: "Standard Input (stdin):";
     display: block;
     font-weight: 600;
     margin-bottom: .25rem;
@@ -202,6 +202,27 @@ pre.codelab-stdin::before {
     background: #252526;
     color: #d4d4d4;
     border-color: #3c3c3c;
+}
+
+/* The console follows the dark theme of the editor (also when the page around it has its own text colour). */
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-console {
+    border-color: #3c3c3c;
+    background: #252526;
+    color: #d4d4d4;
+}
+
+.filter_codelab-viewer.filter_codelab-dark .tiny_codelab-console-status.tiny_codelab-status-ok {
+    color: #89d185;
+}
+
+.filter_codelab-viewer.filter_codelab-dark .tiny_codelab-console-status:not(.tiny_codelab-status-ok):not(.tiny_codelab-status-running),
+.filter_codelab-viewer.filter_codelab-dark .tiny_codelab-console-compile,
+.filter_codelab-viewer.filter_codelab-dark .tiny_codelab-console-error {
+    color: #f48771;
+}
+
+.filter_codelab-viewer.filter_codelab-dark .tiny_codelab-console-empty {
+    color: #9d9d9d;
 }
 
 /* Dark theme cards for pre.codelab */

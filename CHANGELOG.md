@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.11.1 (2026-11-20)
+
+- Dark theme: the output panel below the editor is dark too, with light text and readable colours for the status,
+  errors and an empty output (before, it stayed light grey and could show white text on it).
+- No emoji in the block labels and the README.
+
 ## 1.11.0 (2026-11-12)
 
 - Flowchart: with the algorithm plugins on the site (tiny_algorithm 2.13 or newer), Python examples get a Flowchart
