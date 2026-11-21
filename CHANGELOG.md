@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.11.2 (2026-11-21)
+
+- The language files define pluginname too, besides filtername (Moodle Plugins review, #2).
+
 ## 1.11.1 (2026-11-20)
 
 - Dark theme: the output panel below the editor is dark too, with light text and readable colours for the status,

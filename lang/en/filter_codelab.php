@@ -37,6 +37,7 @@ $string['classworkuse'] = 'Open in my editor';
 $string['codelab:sharework'] = 'Send one\'s own copy of an example to the teacher (class view)';
 $string['codelab:viewclasswork'] = 'See the copies of an example the students changed (class view)';
 $string['filtername'] = 'CodeLab';
+$string['pluginname'] = 'CodeLab';
 $string['privacy:metadata'] = 'The CodeLab filter keeps on the server only the copies for the class view (below); a student\'s edited copy also stays in the browser.';
 $string['privacy:metadata:work'] = 'The last copy of an example each student changed, so the teacher can see the work of the class while it is done.';
 $string['privacy:metadata:work:code'] = 'The student\'s program.';

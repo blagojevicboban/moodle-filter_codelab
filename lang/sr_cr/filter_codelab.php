@@ -37,6 +37,7 @@ $string['classworkuse'] = 'Отвори у мом едитору';
 $string['codelab:sharework'] = 'Слање своје копије примера наставнику (приказ разреда)';
 $string['codelab:viewclasswork'] = 'Преглед копија примера које су ученици мењали (приказ разреда)';
 $string['filtername'] = 'CodeLab';
+$string['pluginname'] = 'CodeLab';
 $string['privacy:metadata'] = 'Филтер CodeLab на серверу чува само копије за приказ разреда (испод); ученикова измењена копија остаје и у прегледачу.';
 $string['privacy:metadata:work'] = 'Последња копија примера коју је сваки ученик мењао, да би наставник видео рад разреда док траје.';
 $string['privacy:metadata:work:code'] = 'Програм ученика.';
