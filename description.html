@@ -15,20 +15,21 @@
   <p><strong>What's New in v1.11.1</strong></p>
   <ul>
     <li><strong>Dark output panel:</strong> with the dark theme the output below the editor is dark too, with readable status and error colours.</li>
-    <li><strong>From 1.11.0, flowchart:</strong> on a site with the Algorithm plugins, Python examples get a Flowchart button that draws the code as a flowchart which runs step by step, with its variables and trace table.</li>
-    <li><strong>From 1.10, class view:</strong> students' changed copies of an example and the result of their last run reach the teacher, who clicks Class to see them as cards, shows one large on the projector or opens it in their own editor. Separate groups are respected and the Privacy API covers the copies.</li>
-    <li><strong>From 1.8.0, complexity:</strong> Python examples get a Complexity button: the lines run for n from 10 to 500 are drawn beside n, n log n and n², the growth is named, and a second version can be kept on the same chart.</li>
-    <li><strong>Debugger:</strong> with CodeLab for TinyMCE 1.6 and 1.7 the Step panel has Step back, a timeline slider and a memory view with arrows, cells and index variables.</li>
-    <li><strong>From 1.5.1, toolbar in one row on phones:</strong> Run, Step and Stop on the left; restore, copy, theme and full screen as icons on the right.</li>
-    <li><strong>From 1.5.0, themes:</strong> readers switch between light and dark on any example; the site default and dark mode are followed.</li>
+    <li><strong>Block labels:</strong> the labels of the examples have no emoji.</li>
   </ul>
 
   <hr>
   <p><strong>Core features</strong></p>
   <ul>
-    <li><strong>Run:</strong> the program is compiled and run on the Jobe server of tiny_codelab. The output appears under the editor, with an input field prefilled with the example's default input.</li>
-    <li><strong>Python in the browser:</strong> input asks in the console while the program runs. Step marks the line that runs next and shows the variables, with changed values highlighted. Stop also ends an endless loop.</li>
+    <li><strong>Run:</strong> the program is compiled and run on the server set in CodeLab for TinyMCE, a Jobe server or the CodeLab runner. The output appears under the editor, with an input field prefilled with the example's default input.</li>
+    <li><strong>Python in the browser:</strong> input asks in the console while the program runs. Stop also ends an endless loop.</li>
+    <li><strong>Debugger:</strong> Step for Python and C/C++ marks the line that runs next and shows the variables, with Step back, a timeline slider, the call stack and a memory view with arrows, cells and index variables.</li>
+    <li><strong>Tooltips and zoom:</strong> with CodeLab for TinyMCE 1.13.3, resting the mouse on a variable while stepping shows its value, on a keyword, an operator or a printf format a short explanation, and on a number its hexadecimal, binary and octal forms. Ctrl and the mouse wheel zoom the code for a projector.</li>
+    <li><strong>Flowchart:</strong> on a site with the Algorithm plugins, Python examples get a Flowchart button that draws the code as a flowchart which runs step by step, with its variables and trace table.</li>
+    <li><strong>Class view:</strong> students' changed copies of an example and the result of their last run reach the teacher, who clicks Class to see them as cards, shows one large on the projector or opens it in their own editor. Separate groups are respected.</li>
+    <li><strong>Complexity:</strong> Python examples get a Complexity button: the lines run for n from 10 to 500 are drawn beside n, n log n and n&sup2;, the growth is named, and a second version can be kept on the same chart.</li>
     <li><strong>The reader's own copy:</strong> the reader's changes are kept in their browser, so they are still there after a reload. Restore original brings back the teacher's code.</li>
+    <li><strong>Themes and phones:</strong> readers switch between light and dark on any example, and on phones the toolbar fits in one row.</li>
     <li><strong>Fast pages:</strong> an editor is built only when its example comes near the screen. Lessons with dozens of examples stay quick.</li>
     <li><strong>Copy</strong> button, and read-only examples with syntax highlighting.</li>
   </ul>
@@ -38,19 +39,19 @@
   <ul>
     <li><strong><a href="https://marketplace.moodle.com/plugins/tiny_codelab" target="_blank" rel="noreferrer noopener">CodeLab for TinyMCE</a></strong>: inserts examples in the TinyMCE editor. The other two plugins use its editor and runner.</li>
     <li><strong><a href="https://marketplace.moodle.com/plugins/filter_codelab" target="_blank" rel="noreferrer noopener">CodeLab filter</a></strong> (this plugin): turns examples into code editors that readers can edit and run.</li>
-    <li><strong><a href="https://marketplace.moodle.com/plugins/qtype_codelab" target="_blank" rel="noreferrer noopener">CodeLab question type</a></strong>: programming questions graded on Jobe with tests.</li>
+    <li><strong><a href="https://marketplace.moodle.com/plugins/qtype_codelab" target="_blank" rel="noreferrer noopener">CodeLab question type</a></strong>: programming questions graded with tests on Jobe or the CodeLab runner.</li>
   </ul>
 
   <hr>
   <p><strong>Requirements</strong></p>
   <ul>
     <li><strong>Moodle:</strong> 4.5 LTS to 5.3 (PHP as required by your Moodle version).</li>
-    <li><strong>tiny_codelab:</strong> version 1.11.0 or newer, with a Jobe server in its settings. After installing, switch the filter <strong>On</strong> in Site administration, Plugins, Filters, Manage filters.</li>
+    <li><strong>tiny_codelab:</strong> version 1.11.0 or newer, with a Jobe server or, from 1.13, the CodeLab runner in its settings. After installing, switch the filter <strong>On</strong> in Site administration, Plugins, Filters, Manage filters.</li>
   </ul>
 
   <hr>
   <p><strong>Privacy</strong></p>
-  <p>For the class view the filter keeps the last changed copy of an example of each student with the result of its last run; the Moodle Privacy API exports and deletes these copies. The reader's copy also stays in the browser's local storage. Programs are run on the Jobe server of tiny_codelab, and Python can run in the reader's browser.</p>
+  <p>For the class view the filter keeps the last changed copy of an example of each student with the result of its last run; the Moodle Privacy API exports and deletes these copies. The reader's copy also stays in the browser's local storage. Programs and their input are sent to the server set in tiny_codelab, Jobe or the CodeLab runner, to be compiled and run, and Python can run in the reader's browser.</p>
 
   <hr>
   <p>Developed by <strong>Boban Blagojevi&#263;</strong>. Languages: English and Serbian (Latin and Cyrillic).<br>
