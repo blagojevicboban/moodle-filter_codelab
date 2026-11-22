@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.14.1 (2026-11-22)
+
+- Accessibility: the console of an example is a region that can be scrolled with the keyboard; screen readers hear
+  the end of a run with the start of its output instead of every line while it is written.
+- Requires tiny_codelab 1.20.0.
+
 ## 1.14.0 (2026-11-22)
 
 - Class view: buttons above the copies filter them by status (all, works, error, not run yet), each with its count.
