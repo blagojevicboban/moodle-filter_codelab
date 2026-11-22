@@ -2,3 +2,4 @@
 *.min.js -diff
 *.map -diff
 .claude export-ignore
+.vscode export-ignore

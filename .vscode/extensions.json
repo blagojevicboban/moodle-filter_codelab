@@ -1,0 +1,16 @@
+{
+    "recommendations": [
+        "bmewburn.vscode-intelephense-client",
+        "shevaua.phpcs",
+        "neilbrayfield.php-docblocker",
+        "dbaeumer.vscode-eslint",
+        "dawhite.mustache",
+        "github.vscode-github-actions",
+        "github.vscode-pull-request-github",
+        "shardulm94.trailing-spaces"
+    ],
+    "unwantedRecommendations": [
+        "devsense.phptools-vscode",
+        "esbenp.prettier-vscode"
+    ]
+}
