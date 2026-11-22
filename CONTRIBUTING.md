@@ -44,8 +44,12 @@ Locally `phpcs` also works through `local_codechecker`:
 ## Rules the Moodle plugin reviewers check
 
 - Every PHP and JavaScript file starts with the GPL boilerplate header, as the existing files do.
-- No hard-coded user-facing text: every string goes into `lang/en/filter_codelab.php` **and** into `lang/sr_lt` and
-  `lang/sr_cr` with the same keys (an English text is fine there if you cannot translate it; say so in the pull request).
+- No hard-coded user-facing text: every string goes into `lang/en/filter_codelab.php` **and** into the 14 other
+  languages with the same keys in the same order: `sr_lt`, `sr_cr`, `de`, `fr`, `es`, `it`, `pt`, `pl`, `hr`, `bs`,
+  `sl`, `mk`, `sk` and `cs` (a machine translation is fine as a start; say in the pull request which languages you
+  could not check). Croatian and Bosnian are ijekavian with their own words, Macedonian is Cyrillic.
+  `node --test tests/js/lang.test.mjs` checks that every language has the keys of English, the same placeholders and
+  HTML tags, and no empty string.
 - No larger HTML built in JavaScript: use Mustache templates in `templates/` and `core/templates`.
 - New personal data or a new place where code or input is sent: update `classes/privacy/provider.php` and its strings.
 - New database fields: `db/install.xml` (edit with the XMLDB editor), and for question data also backup and restore.
