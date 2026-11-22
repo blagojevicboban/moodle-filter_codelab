@@ -179,7 +179,7 @@ const sessionFor = (modes, {block, editor, panel, vars, stdin, buttons, files}) 
     const session = modes.browser
         ? new PythonSession({base: config.pyodide, editor, panel, vars, onState, files})
         : new RemoteSession({lang: block.lang, program: () => editor.getValue(), panel, onState, editor, vars,
-            setup: () => block.setup, files});
+            setup: () => block.setup, files, compiler: () => block.compiler || '', std: () => block.std || ''});
     stepButton?.addEventListener('click', () => {
         if (session.state === 'paused') {
             session.step();
@@ -595,7 +595,7 @@ const build = async(pre, index) => {
         await showRunning(panel);
         try {
             await showResult(panel, await run(block.lang, editor.getValue(), stdin.value, M.cfg.contextid,
-                files ? files.values() : []));
+                files ? files.values() : [], block.compiler || '', block.std || ''));
         } catch (e) {
             await showError(panel, e);
         } finally {
