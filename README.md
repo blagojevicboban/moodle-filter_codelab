@@ -38,6 +38,11 @@ Languages: **C**, **C++**, **Python**, **Java**, **C#**, **JavaScript** (Node.js
   refreshed every 20 seconds, with **Show large** for the projector and **Open in my editor** to run one. Capabilities
   `filter/codelab:sharework` (students) and `filter/codelab:viewclasswork` (teachers); in separate groups a teacher
   sees only their own groups.
+- **The same copy on every device** (1.13): a student who changed an example finds the changed copy on another
+  computer or phone too; the newer of the copy in the browser and the copy on the server opens. Examples inserted or
+  saved with tiny_codelab 1.18 have an id (class `codelab-id-...`), so copies stay with their example when examples are
+  added, removed or moved on the page; older copies move to the id once. Copies go away with their activity, course
+  or user.
 - **Complexity** (Python): lines run against n beside n, n log n and n², with a kept version for comparison.
 - **Flowchart** (Python, when the site has the algorithm plugins, tiny_algorithm 2.13 or newer): the code of the editor
   drawn as a flowchart that runs step by step, with its variables, trace table and the code in other languages.
@@ -57,7 +62,7 @@ The [CodeLab manual](https://github.com/blagojevicboban/moodle-tiny_codelab/blob
 
 - Moodle 4.5 to 5.3
 - PHP 8.2+
-- [tiny_codelab](https://github.com/blagojevicboban/moodle-tiny_codelab) 1.17.0 or newer, installed first
+- [tiny_codelab](https://github.com/blagojevicboban/moodle-tiny_codelab) 1.18.0 or newer, installed first
 
 ## The CodeLab plugins
 
@@ -71,7 +76,9 @@ The [CodeLab manual](https://github.com/blagojevicboban/moodle-tiny_codelab/blob
 
 For the class view the filter keeps the last changed copy of an example of each student, with the result of its last
 run and the time (table `filter_codelab_work`); the original code removes it. The Privacy API exports and deletes these
-copies. The reader's copy of an example also stays in their browser (localStorage).
+copies, and they are deleted with their activity, course or user. The student gets their own copies back on another
+device (web service `filter_codelab_get_my_work`). The reader's copy of an example also stays in their browser
+(localStorage).
 Programs are run on the Jobe server of tiny_codelab. Python runs in the reader's browser; see the tiny_codelab README.
 
 ## License

@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.13.0 (2026-11-22)
+
+- The same copy on every device: a student's changed copy of an example, which already went to the server for the
+  class view, now also comes back on another computer or phone (web service filter_codelab_get_my_work). The newer
+  of the copy in the browser and the copy on the server opens.
+- Stable keys: examples with an id (class codelab-id-..., added by the dialog of tiny_codelab 1.18) keep their copies
+  when other examples are added, removed or moved on the page. A copy saved before the example had an id moves to
+  the id once, in the browser and from the server.
+- Copies are deleted with their activity, course or user (event observers).
+- Requires tiny_codelab 1.18.0.
+
 ## 1.12.0 (2026-11-22)
 
 - AI explanations of errors: with tiny_codelab 1.17 (required) and the setting AI explanations of errors, a button under

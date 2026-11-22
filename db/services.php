@@ -32,6 +32,13 @@ $functions = [
         'ajax' => true,
         'capabilities' => 'filter/codelab:sharework',
     ],
+    'filter_codelab_get_my_work' => [
+        'classname' => \filter_codelab\external\get_my_work::class,
+        'description' => 'The reader\'s own changed copies of the examples of a page (on another computer too).',
+        'type' => 'read',
+        'ajax' => true,
+        'capabilities' => 'filter/codelab:sharework',
+    ],
     'filter_codelab_get_class_work' => [
         'classname' => \filter_codelab\external\get_class_work::class,
         'description' => 'The copies of an example the students changed (class view).',

@@ -34,6 +34,7 @@ import {RemoteSession, runsInteractively, stepsInteractively} from 'tiny_codelab
 import {openComplexity} from 'tiny_codelab/complexity';
 import {watchErrors} from 'tiny_codelab/aihint';
 import {classPanel, loadClassStrings, sharer, statusOf} from 'filter_codelab/classwork';
+import Ajax from 'core/ajax';
 import {getStrings} from 'core/str';
 import {eventTypes} from 'core_filters/events';
 
@@ -287,7 +288,7 @@ const classWork = async(block, index, {editor, panel, toolbar, before, host}) =>
     if (!block.run || !work.contextid || (!work.share && !work.view)) {
         return;
     }
-    const workkey = `w${index}_${hash(block.code)}`;
+    const workkey = workKeyOf(block, index);
     if (work.share) {
         const send = sharer(work, workkey, block.code);
         editor.onChange((value) => send(value));
@@ -334,6 +335,73 @@ const toolbarButtons = (s, runs, modes) => {
 };
 
 /**
+ * Which example of the page a copy belongs to: its id (tiny_codelab 1.18, stable when examples are added or moved) or,
+ * for older blocks, its place on the page; and a hash of its code, so a copy is dropped when the teacher changes it.
+ *
+ * @param {Object} block
+ * @param {number} index place of the example on the page
+ * @returns {string}
+ */
+const workKeyOf = (block, index) => (block.id ? `id_${block.id}_${hash(block.code)}` : `w${index}_${hash(block.code)}`);
+
+/** The reader's copies on the server (filter_codelab_get_my_work), asked for once per page. */
+let myWork = null;
+
+/**
+ * The reader's copies on the server, by work key.
+ *
+ * @returns {Promise<Map<string, {code: string, timemodified: number}>>}
+ */
+const loadMyWork = () => {
+    if (!myWork) {
+        myWork = (!work.share || !work.contextid) ? Promise.resolve(new Map())
+            : Ajax.call([{methodname: 'filter_codelab_get_my_work', args: {contextid: work.contextid}}])[0]
+                .then((result) => new Map(result.copies.map((c) => [c.workkey, c])))
+                .catch(() => new Map());
+    }
+    return myWork;
+};
+
+/**
+ * The reader's saved copy of an example: from the browser, or from the server when that one is newer (the same copy
+ * on another computer or phone). An older copy kept under the place of the example moves to its id once.
+ *
+ * @param {Object} block
+ * @param {number} index
+ * @returns {Promise<{store: Object, time: Object, saved: ?string}>} the copy and the storage of the copy and of its time
+ */
+const savedCopy = async(block, index) => {
+    const page = `${STORE}:${window.location.pathname}${window.location.search}`;
+    const store = storage(`${page}:${block.id ? 'id-' + block.id : index}:${hash(block.code)}`);
+    const time = storage(`${page}:${block.id ? 'id-' + block.id : index}:${hash(block.code)}:t`);
+    if (!block.run) {
+        return {store, time, saved: null};
+    }
+    let saved = store.get();
+    if (saved === null && block.id) {
+        const old = storage(`${page}:${index}:${hash(block.code)}`);
+        saved = old.get();
+        if (saved !== null) {
+            const oldTime = storage(`${page}:${index}:${hash(block.code)}:t`);
+            store.set(saved);
+            time.set(oldTime.get() || String(Date.now()));
+            old.remove();
+            oldTime.remove();
+        }
+    }
+    // A block that got its id later: the copy may still be on the server under its place on the page.
+    const mine = await loadMyWork();
+    const server = mine.get(workKeyOf(block, index)) || (block.id ? mine.get(workKeyOf({code: block.code}, index)) : null);
+    if (server && server.code !== '' && server.code !== saved &&
+            (saved === null || server.timemodified * 1000 > Number(time.get() || 0))) {
+        saved = server.code;
+        store.set(saved);
+        time.set(String(server.timemodified * 1000));
+    }
+    return {store, time, saved};
+};
+
+/**
  * AI help after an error in the console, when the site allows it on this page (tiny_codelab 1.17).
  *
  * @param {Object} block the example
@@ -357,8 +425,7 @@ const build = async(pre, index) => {
     const block = readBlock(pre);
     const id = `filter_codelab_${++counter}`;
     const langName = s[`lang_${block.lang}`];
-    const store = storage(`${STORE}:${window.location.pathname}${window.location.search}:${index}:${hash(block.code)}`);
-    const saved = block.run ? store.get() : null;
+    const {store, time, saved} = await savedCopy(block, index);
 
     const userTheme = storage('codelab_theme').get();
     let initialTheme = 'vs';
@@ -507,6 +574,7 @@ const build = async(pre, index) => {
             editor.setValue(block.code);
             stdin.value = block.stdin;
             store.remove();
+            time.remove();
             note.hidden = true;
         });
         let timer = null;
@@ -515,9 +583,11 @@ const build = async(pre, index) => {
             timer = setTimeout(() => {
                 if (value === block.code) {
                     store.remove();
+                    time.remove();
                     note.hidden = true;
                 } else {
                     store.set(value);
+                    time.set(String(Date.now()));
                     note.hidden = false;
                 }
             }, 500);
