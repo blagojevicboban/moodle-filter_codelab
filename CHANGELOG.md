@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.15.0 (2026-11-22)
+
+- The interface in 12 more languages: German, French, Spanish, Italian, Portuguese, Polish, Croatian, Bosnian,
+  Slovenian, Macedonian, Slovak and Czech (15 with English and Serbian). Needs tiny_codelab 1.21.0.
+
 ## 1.14.1 (2026-11-22)
 
 - Accessibility: the console of an example is a region that can be scrolled with the keyboard; screen readers hear
