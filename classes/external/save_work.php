@@ -30,9 +30,6 @@ use core_external\external_value;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class save_work extends external_api {
-    /** Longest copy that is kept. */
-    const MAX_LENGTH = 100000;
-
     /** Results of a run that are kept (empty: not run since the last change). */
     const STATUSES = ['', 'ok', 'error'];
 
@@ -74,7 +71,8 @@ class save_work extends external_api {
             $DB->delete_records('filter_codelab_work', $where);
             return ['saved' => false];
         }
-        if (strlen($params['code']) > self::MAX_LENGTH) {
+        // Not longer than tiny_codelab runs, so that a kept copy can always be run.
+        if (strlen($params['code']) > \tiny_codelab\local\jobe::MAX_SIZE) {
             throw new \invalid_parameter_exception('The program is too long');
         }
         $status = in_array($params['status'], self::STATUSES, true) ? $params['status'] : '';
