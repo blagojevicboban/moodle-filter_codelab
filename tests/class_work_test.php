@@ -88,13 +88,30 @@ final class class_work_test extends \advanced_testcase {
         save_work::execute($context->id, 'wabc', self::PROGRAM, 'weird');
         $this->assertSame('', $GLOBALS['DB']->get_field('filter_codelab_work', 'status', ['userid' => $s1->id]));
         try {
-            save_work::execute($context->id, 'wabc', str_repeat('x', save_work::MAX_LENGTH + 1));
+            save_work::execute($context->id, 'wabc', str_repeat('x', \tiny_codelab\local\jobe::MAX_SIZE + 1));
             $this->fail('A program that is too long was kept');
         } catch (\invalid_parameter_exception $e) {
             $this->assertStringContainsString('too long', $e->getMessage());
         }
         $this->expectException(\required_capability_exception::class);
         get_class_work::execute($context->id, 'wabc');
+    }
+
+    public function test_copies_have_the_size_limit_of_a_run(): void {
+        $this->resetAfterTest();
+        [$context, , $s1] = $this->setup_course();
+        $this->setUser($s1);
+        // The largest program that tiny_codelab runs is kept.
+        $largest = str_repeat('x', \tiny_codelab\local\jobe::MAX_SIZE);
+        $this->assertTrue(save_work::execute($context->id, 'wabc', $largest)['saved']);
+        // One byte more would be refused by Run (toolarge), so it is not kept either.
+        try {
+            save_work::execute($context->id, 'wabc', $largest . 'x');
+            $this->fail('A program that cannot be run was kept');
+        } catch (\invalid_parameter_exception $e) {
+            $this->assertStringContainsString('too long', $e->getMessage());
+        }
+        $this->assertSame($largest, $GLOBALS['DB']->get_field('filter_codelab_work', 'code', ['userid' => $s1->id]));
     }
 
     public function test_separate_groups(): void {
