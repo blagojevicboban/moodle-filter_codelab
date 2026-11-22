@@ -495,7 +495,10 @@ const build = async(pre, index) => {
         details.append(summary, stdin);
         panel = document.createElement('div');
         panel.className = 'tiny_codelab-console filter_codelab-console';
-        panel.setAttribute('role', 'status');
+        // A scrolling region reachable by the keyboard, not live: tiny_codelab (1.20) reads the end of a run with the
+        // start of its output in a live region next to it, instead of every line while it is written.
+        panel.setAttribute('role', 'region');
+        panel.tabIndex = 0;
         panel.setAttribute('aria-label', s.output);
         panel.hidden = true;
         viewer.append(details, panel);
