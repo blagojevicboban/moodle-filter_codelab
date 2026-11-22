@@ -59,14 +59,6 @@ class get_class_work extends external_api {
         $context = \context::instance_by_id($params['contextid']);
         self::validate_context($context);
         require_capability('filter/codelab:viewclasswork', $context);
-        $records = $DB->get_records(
-            'filter_codelab_work',
-            ['contextid' => $context->id, 'workkey' => substr($params['workkey'], 0, 64)],
-            'timemodified DESC',
-            '*',
-            0,
-            self::MAX_COPIES
-        );
         // Separate groups: only the students of the teacher's own groups, unless the teacher sees all groups.
         $coursecontext = $context->get_course_context(false);
         $allowed = null;
@@ -84,6 +76,27 @@ class get_class_work extends external_api {
                 }
             }
         }
+        if ($allowed === []) {
+            return ['copies' => []];
+        }
+        // The students of the teacher's groups are chosen in the query, before the limit: otherwise the newest copies of
+        // other groups could fill the limit and the teacher would see few or none of their own students.
+        $select = 'contextid = :contextid AND workkey = :workkey';
+        $sqlparams = ['contextid' => $context->id, 'workkey' => substr($params['workkey'], 0, 64)];
+        if ($allowed !== null) {
+            [$insql, $inparams] = $DB->get_in_or_equal(array_keys($allowed), SQL_PARAMS_NAMED, 'user');
+            $select .= " AND userid {$insql}";
+            $sqlparams += $inparams;
+        }
+        $records = $DB->get_records_select(
+            'filter_codelab_work',
+            $select,
+            $sqlparams,
+            'timemodified DESC',
+            '*',
+            0,
+            self::MAX_COPIES
+        );
         $fields = \core_user\fields::for_name()->get_sql('', false, '', '', false)->selects;
         $users = $records ? $DB->get_records_list(
             'user',
