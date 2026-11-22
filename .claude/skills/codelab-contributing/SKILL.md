@@ -12,11 +12,10 @@ The three plugins are one family: `tiny_codelab` (core: Monaco editor, runners, 
 ## Workflow
 
 - One issue per pull request, from a branch `fix/<name>` or `feature/<name>`; put `Fixes #N` in the description.
-- `main` is protected: a pull request needs a green CI and the maintainer's approval. Tags `v*` and releases are the
-  maintainer's.
-- Do **not** change `version.php` (`version`, `release`, `dependencies`), `CHANGELOG.md` or `description.html`. If the
-  change needs a database upgrade, a new capability, cache or web service (all need a version bump), say so in the pull
-  request and leave the bump to the maintainer.
+- `main` is protected: a pull request needs a green CI; merge it yourself then.
+- In a feature or fix pull request do not change `version.php`, `CHANGELOG.md` or `description.html`; they change in a
+  release commit (see Releases). Say in the pull request when the change needs an upgrade step, a new capability, cache
+  or web service (all need a version bump in the next release).
 - Commit messages in English: one line saying what changes for the user, more lines when the reason is not obvious.
 - Never commit keys, passwords, Jobe API keys or runner secrets.
 
@@ -78,3 +77,29 @@ moodle-plugin-ci phpunit --fail-on-warning
 - PHPUnit must work on all CI Moodle versions: an API missing in Moodle 4.5 or 5.0 needs a `method_exists` check (or the
   test is skipped there with a reason), and deprecated functions need their replacement when it exists.
 - Files written by scripts on Windows must keep LF line endings.
+
+## Releases
+
+Releases are made by the release manager (the maintainer, or a collaborator he named), after the pull requests are
+merged and CI of `main` is green. Order when several plugins change: tiny first, then filter, then qtype (dependencies
+first).
+
+1. **Version** in `version.php`: `version` = date and two digits, higher than the last one (`YYYYMMDDXX`), `release`
+   (`1.19.1`: patch for fixes, minor for features), `maturity` stays `MATURITY_STABLE`. When the plugin needs the new
+   version of tiny, raise `dependencies` to tiny's new `version` in the same release.
+2. **CHANGELOG.md**: a new section on top, `## <release> (<date>)`, what changes for teachers and students.
+3. **README.md**: describe new features; requirements with the version of tiny the plugin needs.
+4. **description.html** (the Marketplace listing): `What's New in v<release>` lists the changes since the version that
+   is on the Marketplace now (one line per earlier release, `From x.y.z: ...`); the Marketplace sanitizer keeps only
+   `p`, `div`, `a`, `img`, `ul`, `ol`, `li`, `strong`, `em`, `code`, `br`, `hr` (titles as `<p><strong>...</strong></p>`)
+   and the field allows **at most 7000 characters**: shorten older items first.
+5. Commit `Release <component> <release>`, push, wait for CI of `main`, then the tag: `git tag v<release>` and
+   `git push origin v<release>`. A pushed tag is never moved: a fix is a new patch release.
+6. **ZIP** for the Marketplace: `git archive --format=zip --prefix=<plugin folder>/ -o <component>-<release>.zip v<release>`
+   (`codelab/` for the CodeLab plugins, `algorithm/` for the Algorithm plugins). `.claude/` is left out by
+   `.gitattributes`.
+7. **Release notes** for the upload form, plain sentences and `-` bullets only: no quotes, no parentheses, no `<`, `>`,
+   `$`, `{}` and no code-like names (the upload page is behind Cloudflare and blocks such text).
+8. Send the ZIPs and the notes to the maintainer, who uploads them to the Moodle Plugins directory with his account.
+9. **Demo sites** (codelab, algorithm and aisim .tsp.edu.rs) take the plugins from `main` when their demo repository
+   gets a push; the maintainer (or whoever has write on the demo repositories) refreshes them after a release.
