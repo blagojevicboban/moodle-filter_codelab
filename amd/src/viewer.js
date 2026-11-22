@@ -64,7 +64,7 @@ const loadStrings = async() => {
     if (!strings) {
         const keys = ['run', 'reset', 'copy', 'copied', 'input', 'output', 'editedcopy', 'step', 'stop', 'fullscreen',
             'exitfullscreen', 'toggletheme', 'complexity', 'flowchart', 'flowchartwarnings', 'flowchartfailed', 'filescount',
-            'filetext']
+            'filetext', 'safemode']
             .concat(Object.keys(languages).map((lang) => `lang_${lang}`));
         const values = await getStrings(keys.map((key) => ({key, component: 'tiny_codelab'})));
         strings = Object.fromEntries(keys.map((key, i) => [key, values[i]]));
@@ -167,7 +167,14 @@ const sessionFor = (modes, {block, editor, panel, vars, stdin, buttons, files}) 
     if (!modes.browser && !modes.remote) {
         return null;
     }
-    const {runButton, stepButton, stopButton, resetButton} = buttons;
+    const {runButton, stepButton, stopButton, resetButton, safeButton} = buttons;
+    let safeOn = false;
+    safeButton?.addEventListener('click', () => {
+        safeOn = !safeOn;
+        safeButton.setAttribute('aria-pressed', String(safeOn));
+        safeButton.classList.toggle('btn-info', safeOn);
+        safeButton.classList.toggle('btn-secondary', !safeOn);
+    });
     const onState = (state) => {
         runButton.disabled = state === 'running';
         if (stepButton) {
@@ -179,7 +186,8 @@ const sessionFor = (modes, {block, editor, panel, vars, stdin, buttons, files}) 
     const session = modes.browser
         ? new PythonSession({base: config.pyodide, editor, panel, vars, onState, files})
         : new RemoteSession({lang: block.lang, program: () => editor.getValue(), panel, onState, editor, vars,
-            setup: () => block.setup, files, compiler: () => block.compiler || '', std: () => block.std || ''});
+            setup: () => block.setup, files, compiler: () => block.compiler || '', std: () => block.std || '',
+            sanitize: () => safeOn});
     stepButton?.addEventListener('click', () => {
         if (session.state === 'paused') {
             session.step();
@@ -356,16 +364,22 @@ const classWork = async(block, index, {editor, panel, toolbar, before, host}) =>
  * @param {Object} s strings
  * @param {boolean} runs
  * @param {Object} modes of runModes()
+ * @param {string} [lang]
  * @returns {Object<string, HTMLButtonElement|null>}
  */
-const toolbarButtons = (s, runs, modes) => {
+const toolbarButtons = (s, runs, modes, lang = '') => {
     const stopButton = modes.browser || modes.remote ? button(s.stop, 'stop', 'btn-danger') : null;
     if (stopButton) {
         stopButton.hidden = true;
     }
+    const safeButton = modes.remote && (lang === 'c' || lang === 'cpp') ? button(s.safemode, 'safemode') : null;
+    if (safeButton) {
+        safeButton.setAttribute('aria-pressed', 'false');
+    }
     return {
         runButton: runs ? button(s.run, 'run', 'btn-primary') : null,
         stepButton: modes.step ? button(s.step, 'step') : null,
+        safeButton,
         // Lines run against n (tiny_codelab/complexity): Python in the browser counts them.
         complexityButton: modes.browser ? button(s.complexity, 'complexity') : null,
         flowchartButton: modes.flowchart ? button(s.flowchart, 'flowchart') : null,
@@ -535,14 +549,14 @@ const build = async(pre, index) => {
     badge.textContent = langName;
     toolbar.append(badge);
     const modes = runModes(block);
-    const buttons = toolbarButtons(s, block.run, modes);
-    const {runButton, stepButton, complexityButton, flowchartButton, stopButton, resetButton, copyButton} = buttons;
+    const buttons = toolbarButtons(s, block.run, modes, block.lang);
+    const {runButton, stepButton, safeButton, complexityButton, flowchartButton, stopButton, resetButton, copyButton} = buttons;
     // Run, Step and Stop on the left; the tools (restore, copy, theme, full screen) as icons on the right, so the bar
     // fits one row on a phone.
     const spacer = document.createElement('span');
     spacer.className = 'filter_codelab-spacer';
-    [runButton, stepButton, complexityButton, flowchartButton, stopButton, spacer, resetButton, copyButton].filter(Boolean)
-        .forEach((b) => toolbar.append(b));
+    [runButton, stepButton, safeButton, complexityButton, flowchartButton, stopButton, spacer, resetButton, copyButton]
+        .filter(Boolean).forEach((b) => toolbar.append(b));
     const note = document.createElement('span');
     note.className = 'filter_codelab-note';
     note.textContent = s.editedcopy;
