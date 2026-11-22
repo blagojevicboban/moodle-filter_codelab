@@ -1,3 +1,4 @@
 * text=auto eol=lf
 *.min.js -diff
 *.map -diff
+.claude export-ignore
