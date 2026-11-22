@@ -3,6 +3,17 @@ name: Moodle Plugin CI
 on: [push, pull_request]
 
 jobs:
+  node-tests:
+    # Unit tests of the browser modules that need no Moodle (filters of the class view).
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Node tests
+        run: node --test tests/js/*.test.mjs
+
   test:
     runs-on: ubuntu-24.04
 

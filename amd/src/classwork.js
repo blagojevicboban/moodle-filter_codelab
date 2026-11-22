@@ -32,8 +32,43 @@ const REFRESH_SECONDS = 20;
 /** Lines of the code shown on a card. */
 const CARD_LINES = 12;
 
-const KEYS = ['classwork', 'classworkclose', 'classworkcount', 'classworkempty', 'classworkerror', 'classworkfull',
-    'classworknotrun', 'classworkok', 'classworkrefresh', 'classworkuse'];
+const KEYS = ['classwork', 'classworkall', 'classworkclose', 'classworkcount', 'classworkempty', 'classworkerror',
+    'classworkfilter', 'classworkfull', 'classworknone', 'classworknotrun', 'classworkok', 'classworkrefresh', 'classworkuse'];
+
+/** The filters of the Class panel, in the order of their buttons: all copies, or one status ('' is not run). */
+export const FILTERS = ['all', 'ok', 'error', ''];
+
+/**
+ * The status of a copy as the filters know it: ok, error, or '' (not run, also for an unknown status).
+ *
+ * @param {{status: string}} copy
+ * @returns {string}
+ */
+const statusKey = (copy) => (copy.status === 'ok' || copy.status === 'error' ? copy.status : '');
+
+/**
+ * How many copies each filter shows.
+ *
+ * @param {Array<{status: string}>} copies
+ * @returns {Object<string, number>} all, ok, error and '' (not run)
+ */
+export const countByStatus = (copies) => {
+    const counts = {all: copies.length, ok: 0, error: 0, '': 0};
+    copies.forEach((copy) => {
+        counts[statusKey(copy)]++;
+    });
+    return counts;
+};
+
+/**
+ * The copies a filter shows, in their order.
+ *
+ * @param {Array<{status: string}>} copies
+ * @param {string} filter one of FILTERS
+ * @returns {Array<{status: string}>}
+ */
+export const filterCopies = (copies, filter) =>
+    (filter === 'all' ? copies : copies.filter((copy) => statusKey(copy) === filter));
 let strings = null;
 
 /**
@@ -174,8 +209,39 @@ export const classPanel = async(toggle, after, work, workkey, use) => {
     toggle.setAttribute('aria-expanded', 'false');
     let timer = null;
     const status = {ok: s.classworkok, error: s.classworkerror, '': s.classworknotrun};
+    // The chosen filter and the last copies: the filter stays when the panel refreshes.
+    let filter = 'all';
+    let last = [];
+
+    /**
+     * The filter buttons, each with its count; the chosen one is pressed.
+     *
+     * @param {Object<string, number>} counts
+     * @returns {HTMLElement}
+     */
+    const filterButtons = (counts) => {
+        const group = el('div', 'btn-group btn-group-sm flex-wrap filter_codelab-class-filter');
+        group.setAttribute('role', 'group');
+        group.setAttribute('aria-label', s.classworkfilter);
+        FILTERS.forEach((key) => {
+            const b = button(key === 'all' ? s.classworkall : status[key], 'classfilter');
+            b.dataset.filter = key;
+            b.setAttribute('aria-pressed', key === filter ? 'true' : 'false');
+            b.classList.toggle('active', key === filter);
+            b.append(' ', el('span', 'badge bg-secondary filter_codelab-class-filtercount', String(counts[key])));
+            b.addEventListener('click', () => {
+                filter = key;
+                draw(last);
+            });
+            group.append(b);
+        });
+        return group;
+    };
 
     const draw = (copies) => {
+        last = copies;
+        // A redraw keeps the keyboard focus on the filter button that had it.
+        const focused = panel.contains(document.activeElement) ? document.activeElement.dataset?.filter : undefined;
         panel.replaceChildren();
         const head = el('div', 'filter_codelab-class-head');
         const count = el('span', 'fw-bold', s.classworkcount.replace('{$a}', String(copies.length)));
@@ -190,8 +256,18 @@ export const classPanel = async(toggle, after, work, workkey, use) => {
             panel.append(el('p', 'filter_codelab-class-empty mb-0', s.classworkempty));
             return;
         }
+        const filters = filterButtons(countByStatus(copies));
+        panel.append(filters);
+        if (focused !== undefined) {
+            filters.querySelector(`[data-filter="${focused}"]`)?.focus();
+        }
+        const shown = filterCopies(copies, filter);
+        if (!shown.length) {
+            panel.append(el('p', 'filter_codelab-class-empty mb-0', s.classworknone));
+            return;
+        }
         const grid = el('div', 'filter_codelab-class-grid');
-        copies.forEach((copy) => {
+        shown.forEach((copy) => {
             const card = el('div', 'filter_codelab-class-card');
             card.dataset.userid = String(copy.userid);
             const top = el('div', 'filter_codelab-class-cardhead');
