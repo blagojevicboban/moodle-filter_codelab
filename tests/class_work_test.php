@@ -142,6 +142,48 @@ final class class_work_test extends \advanced_testcase {
         $this->assertSame([(int) $s1->id], array_column($copies, 'userid'));
     }
 
+    public function test_separate_groups_are_chosen_before_the_limit(): void {
+        $this->resetAfterTest();
+        [$context, , $s1, $s2, $course] = $this->setup_course();
+        $gen = $this->getDataGenerator();
+        $DB = $GLOBALS['DB'];
+        $DB->set_field('course', 'groupmode', SEPARATEGROUPS, ['id' => $course->id]);
+        $DB->set_field('course', 'groupmodeforce', 1, ['id' => $course->id]);
+        assign_capability(
+            'moodle/site:accessallgroups',
+            CAP_PROHIBIT,
+            $DB->get_field('role', 'id', ['shortname' => 'teacher']),
+            \context_course::instance($course->id)->id,
+            true
+        );
+        $teacher = $gen->create_and_enrol($course, 'teacher');
+        $groupa = $gen->create_group(['courseid' => $course->id]);
+        $groupb = $gen->create_group(['courseid' => $course->id]);
+        foreach ([$teacher, $s1, $s2] as $user) {
+            $gen->create_group_member(['groupid' => $groupa->id, 'userid' => $user->id]);
+        }
+        // Group A saved first; then group B saves more than MAX_COPIES newer copies.
+        $workkey = 'wabc';
+        $time = time() - 10000;
+        foreach ([$s1, $s2] as $s) {
+            $DB->insert_record('filter_codelab_work', (object) ['contextid' => $context->id, 'workkey' => $workkey,
+                'userid' => $s->id, 'code' => self::PROGRAM, 'status' => '', 'timemodified' => $time++]);
+        }
+        for ($i = 0; $i <= get_class_work::MAX_COPIES; $i++) {
+            $student = $gen->create_and_enrol($course, 'student');
+            $gen->create_group_member(['groupid' => $groupb->id, 'userid' => $student->id]);
+            $DB->insert_record('filter_codelab_work', (object) ['contextid' => $context->id, 'workkey' => $workkey,
+                'userid' => $student->id, 'code' => self::PROGRAM, 'status' => '', 'timemodified' => $time++]);
+        }
+        // The teacher of group A still sees all copies of group A.
+        $this->setUser($teacher);
+        $copies = get_class_work::execute($context->id, $workkey)['copies'];
+        $this->assertEqualsCanonicalizing([(int) $s1->id, (int) $s2->id], array_column($copies, 'userid'));
+        // A teacher in no group sees no copies.
+        $this->setUser($gen->create_and_enrol($course, 'teacher'));
+        $this->assertSame([], get_class_work::execute($context->id, $workkey)['copies']);
+    }
+
     public function test_privacy(): void {
         $this->resetAfterTest();
         [$context, , $s1, $s2] = $this->setup_course();
