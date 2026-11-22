@@ -32,18 +32,26 @@
     color: #6a737b;
 }
 
-.filter_codelab-stdin {
+.filter_codelab-stdin,
+.filter_codelab-files {
     padding: .375rem .5rem;
     border-top: 1px solid #dee2e6;
 }
 
-.filter_codelab-stdin summary {
+.filter_codelab-stdin summary,
+.filter_codelab-files summary {
     font-size: .875rem;
     cursor: pointer;
 }
 
 .filter_codelab-stdin textarea {
     margin-top: .375rem;
+}
+
+.filter_codelab-filename {
+    display: block;
+    margin: .375rem 0 0;
+    font-size: .8125rem;
 }
 
 .filter_codelab-viewer .filter_codelab-console {
@@ -175,6 +183,28 @@ pre.codelab-stdin::before {
     color: #475569;
 }
 
+/* A file of an example (tiny_codelab 1.22), as plain text until the viewer is built or without JavaScript. */
+pre.codelab-file {
+    margin-top: -1.25rem;
+    margin-bottom: 1.5rem;
+    padding: .5rem .75rem;
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-top: none;
+    border-bottom-left-radius: .375rem;
+    border-bottom-right-radius: .375rem;
+    font-size: .8125rem;
+    color: #64748b;
+}
+
+pre.codelab-file::before {
+    content: "File:";
+    display: block;
+    font-weight: 600;
+    margin-bottom: .25rem;
+    color: #475569;
+}
+
 /* Dark theme viewer container and toolbar */
 .filter_codelab-viewer.filter_codelab-dark {
     border-color: #3c3c3c;
@@ -192,13 +222,15 @@ pre.codelab-stdin::before {
     color: #9d9d9d;
 }
 
-.filter_codelab-viewer.filter_codelab-dark .filter_codelab-stdin {
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-stdin,
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-files {
     border-top: 1px solid #3c3c3c;
     background: #1e1e1e;
     color: #cccccc;
 }
 
-.filter_codelab-viewer.filter_codelab-dark .filter_codelab-stdin textarea {
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-stdin textarea,
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-files textarea {
     background: #252526;
     color: #d4d4d4;
     border-color: #3c3c3c;

@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 import {languages, setupLanguages, defaultTheme} from 'tiny_codelab/common';
-import {readBlock, stdinOf, setupOf} from 'tiny_codelab/embed';
+import {readBlock, stdinOf, setupOf, filesOf} from 'tiny_codelab/embed';
 import {createEditor, resolveTheme} from 'tiny_codelab/monaco';
 import {run} from 'tiny_codelab/runner';
 import {showRunning, showResult, showError} from 'tiny_codelab/console';
@@ -63,7 +63,8 @@ let work = {contextid: 0, share: false, view: false};
 const loadStrings = async() => {
     if (!strings) {
         const keys = ['run', 'reset', 'copy', 'copied', 'input', 'output', 'editedcopy', 'step', 'stop', 'fullscreen',
-            'exitfullscreen', 'toggletheme', 'complexity', 'flowchart', 'flowchartwarnings', 'flowchartfailed']
+            'exitfullscreen', 'toggletheme', 'complexity', 'flowchart', 'flowchartwarnings', 'flowchartfailed', 'filescount',
+            'filetext']
             .concat(Object.keys(languages).map((lang) => `lang_${lang}`));
         const values = await getStrings(keys.map((key) => ({key, component: 'tiny_codelab'})));
         strings = Object.fromEntries(keys.map((key, i) => [key, values[i]]));
@@ -159,9 +160,10 @@ const runModes = (block) => {
  * @param {HTMLElement} options.vars
  * @param {HTMLTextAreaElement} options.stdin
  * @param {Object<string, HTMLButtonElement|null>} options.buttons
+ * @param {function(): Array<{name: string, text: string}>} options.files the files as the reader has them now
  * @returns {PythonSession|RemoteSession|null}
  */
-const sessionFor = (modes, {block, editor, panel, vars, stdin, buttons}) => {
+const sessionFor = (modes, {block, editor, panel, vars, stdin, buttons, files}) => {
     if (!modes.browser && !modes.remote) {
         return null;
     }
@@ -175,7 +177,7 @@ const sessionFor = (modes, {block, editor, panel, vars, stdin, buttons}) => {
         resetButton.disabled = state !== 'idle';
     };
     const session = modes.browser
-        ? new PythonSession({base: config.pyodide, editor, panel, vars, onState})
+        ? new PythonSession({base: config.pyodide, editor, panel, vars, onState, files})
         : new RemoteSession({lang: block.lang, program: () => editor.getValue(), panel, onState, editor, vars,
             setup: () => block.setup});
     stepButton?.addEventListener('click', () => {
@@ -187,6 +189,45 @@ const sessionFor = (modes, {block, editor, panel, vars, stdin, buttons}) => {
     });
     stopButton.addEventListener('click', () => session.stop());
     return session;
+};
+
+/**
+ * The files of an example (tiny_codelab 1.22) under its input, closed: the reader can read and change them, and Reset
+ * gives them back. Python in the browser writes them into the working folder before each run.
+ *
+ * @param {Object<string, string>} s strings
+ * @param {Array<{name: string, text: string}>} files of the block
+ * @param {string} id prefix of the ids of the text areas
+ * @returns {{root: HTMLElement, values: function(): Array<{name: string, text: string}>, reset: function(): void}}
+ */
+export const filesBox = (s, files, id) => {
+    const root = document.createElement('details');
+    root.className = 'filter_codelab-files';
+    const summary = document.createElement('summary');
+    summary.textContent = s.filescount.replace('{$a}', files.length);
+    root.append(summary);
+    const areas = files.map((file, i) => {
+        const label = document.createElement('label');
+        label.className = 'filter_codelab-filename font-monospace';
+        label.htmlFor = `${id}_file${i}`;
+        label.textContent = file.name;
+        const area = document.createElement('textarea');
+        area.id = label.htmlFor;
+        area.className = 'form-control font-monospace';
+        area.rows = Math.min(8, Math.max(2, file.text.split('\n').length));
+        area.spellcheck = false;
+        area.value = file.text;
+        area.setAttribute('aria-label', s.filetext.replace('{$a}', file.name));
+        root.append(label, area);
+        return area;
+    });
+    return {
+        root,
+        values: () => files.map((file, i) => ({name: file.name, text: areas[i].value})),
+        reset: () => files.forEach((file, i) => {
+            areas[i].value = file.text;
+        }),
+    };
 };
 
 /**
@@ -415,6 +456,48 @@ const aiHelp = (block, panel, editor) => {
 };
 
 /**
+ * The input, the files and the console of an example that runs, added to its viewer.
+ *
+ * @param {Object<string, string>} s strings
+ * @param {Object} block of readBlock
+ * @param {string} id prefix of the ids
+ * @param {HTMLElement} viewer
+ * @returns {{stdin: HTMLTextAreaElement, panel: HTMLElement, files: ?Object}} files of filesBox, null without files
+ */
+const runArea = (s, block, id, viewer) => {
+    let files = null;
+    const details = document.createElement('details');
+    details.className = 'filter_codelab-stdin';
+    details.open = block.stdin !== '' || READS_INPUT.test(block.code);
+    details.hidden = setupLanguages.includes(block.lang);
+    const summary = document.createElement('summary');
+    summary.textContent = s.input;
+    const stdin = document.createElement('textarea');
+    stdin.id = `${id}_stdin`;
+    stdin.className = 'form-control font-monospace';
+    stdin.rows = 3;
+    stdin.spellcheck = false;
+    stdin.setAttribute('aria-label', s.input);
+    stdin.value = block.stdin;
+    details.append(summary, stdin);
+    const panel = document.createElement('div');
+    panel.className = 'tiny_codelab-console filter_codelab-console';
+    // A scrolling region reachable by the keyboard, not live: tiny_codelab (1.20) reads the end of a run with the
+    // start of its output in a live region next to it, instead of every line while it is written.
+    panel.setAttribute('role', 'region');
+    panel.tabIndex = 0;
+    panel.setAttribute('aria-label', s.output);
+    panel.hidden = true;
+    viewer.append(details);
+    if (block.files.length) {
+        files = filesBox(s, block.files, id);
+        viewer.append(files.root);
+    }
+    viewer.append(panel);
+    return {stdin, panel, files};
+};
+
+/**
  * Build the viewer of one block in place of the pre element.
  *
  * @param {HTMLElement} pre
@@ -476,33 +559,7 @@ const build = async(pre, index) => {
         viewer.append(vars);
     }
 
-    let stdin = null;
-    let panel = null;
-    if (block.run) {
-        const details = document.createElement('details');
-        details.className = 'filter_codelab-stdin';
-        details.open = block.stdin !== '' || READS_INPUT.test(block.code);
-        details.hidden = setupLanguages.includes(block.lang);
-        const summary = document.createElement('summary');
-        summary.textContent = s.input;
-        stdin = document.createElement('textarea');
-        stdin.id = `${id}_stdin`;
-        stdin.className = 'form-control font-monospace';
-        stdin.rows = 3;
-        stdin.spellcheck = false;
-        stdin.setAttribute('aria-label', s.input);
-        stdin.value = block.stdin;
-        details.append(summary, stdin);
-        panel = document.createElement('div');
-        panel.className = 'tiny_codelab-console filter_codelab-console';
-        // A scrolling region reachable by the keyboard, not live: tiny_codelab (1.20) reads the end of a run with the
-        // start of its output in a live region next to it, instead of every line while it is written.
-        panel.setAttribute('role', 'region');
-        panel.tabIndex = 0;
-        panel.setAttribute('aria-label', s.output);
-        panel.hidden = true;
-        viewer.append(details, panel);
-    }
+    const {stdin, panel, files} = block.run ? runArea(s, block, id, viewer) : {stdin: null, panel: null, files: null};
 
     pre.hidden = true;
     if (stdinOf(pre)) {
@@ -511,6 +568,12 @@ const build = async(pre, index) => {
     if (setupOf(pre)) {
         // The tables and data of SQL are never shown to readers.
         setupOf(pre).hidden = true;
+    }
+    if (files) {
+        // The files are in the viewer now.
+        filesOf(pre).forEach((f) => {
+            f.element.hidden = true;
+        });
     }
     pre.after(viewer);
 
@@ -552,7 +615,7 @@ const build = async(pre, index) => {
         breakpoints: modes.step,
     });
 
-    session = sessionFor(modes, {block, editor, panel, vars, stdin, buttons});
+    session = sessionFor(modes, {block, editor, panel, vars, stdin, buttons, files: () => (files ? files.values() : [])});
     complexityPanel(complexityButton, vars, editor);
     classWork(block, index, {editor, panel, toolbar, before: spacer, host});
     aiHelp(block, panel, editor);
@@ -576,6 +639,7 @@ const build = async(pre, index) => {
         resetButton.addEventListener('click', () => {
             editor.setValue(block.code);
             stdin.value = block.stdin;
+            files?.reset();
             store.remove();
             time.remove();
             note.hidden = true;
@@ -622,6 +686,9 @@ const onVisible = (entries) => {
             if (stdinOf(e.target)) {
                 stdinOf(e.target).hidden = false;
             }
+            filesOf(e.target).forEach((f) => {
+                f.element.hidden = false;
+            });
         });
     });
 };

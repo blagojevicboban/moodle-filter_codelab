@@ -49,9 +49,11 @@ final class text_filter_test extends \advanced_testcase {
         $this->resetAfterTest();
         $filter = new text_filter(\context_system::instance(), []);
         $text = purify_html('<pre class="codelab codelab-lang-c codelab-run">int main(void) { return 0; }</pre>' .
-            '<pre class="codelab-stdin">5</pre>');
+            '<pre class="codelab-stdin">5</pre><pre class="codelab-file codelab-file-input-txt">1 2</pre>');
         $this->assertStringContainsString('codelab-lang-c', $text);
         $this->assertStringContainsString('<pre class="codelab-stdin">5</pre>', $text);
+        // The files of an example (tiny_codelab 1.22) keep their names, which are classes.
+        $this->assertStringContainsString('<pre class="codelab-file codelab-file-input-txt">1 2</pre>', $text);
         $this->assertSame($text, $filter->filter($text));
         $this->assertTrue($this->viewer_loaded());
     }
