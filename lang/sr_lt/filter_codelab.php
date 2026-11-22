@@ -25,11 +25,14 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['classwork'] = 'Razred';
+$string['classworkall'] = 'Sve';
 $string['classworkclose'] = 'Zatvori';
 $string['classworkcount'] = 'Kopije učenika: {$a}';
 $string['classworkempty'] = 'Nijedan učenik još nije menjao ovaj primer.';
 $string['classworkerror'] = 'greška';
+$string['classworkfilter'] = 'Prikaži kopije';
 $string['classworkfull'] = 'Prikaži uvećano';
+$string['classworknone'] = 'Nijedna kopija nema ovaj status.';
 $string['classworknotrun'] = 'nije pokrenut';
 $string['classworkok'] = 'radi';
 $string['classworkrefresh'] = 'Osveži';

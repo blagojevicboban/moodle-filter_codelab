@@ -283,6 +283,14 @@ pre.codelab.codelab-theme-hc-black.codelab-run::after {
     margin-bottom: .5rem;
 }
 
+.filter_codelab-class-filter {
+    margin-bottom: .5rem;
+}
+
+.filter_codelab-class-filtercount {
+    margin-left: .15rem;
+}
+
 .filter_codelab-class-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));

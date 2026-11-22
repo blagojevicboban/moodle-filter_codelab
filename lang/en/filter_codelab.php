@@ -25,11 +25,14 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['classwork'] = 'Class';
+$string['classworkall'] = 'All';
 $string['classworkclose'] = 'Close';
 $string['classworkcount'] = 'Copies of the students: {$a}';
 $string['classworkempty'] = 'No student has changed this example yet.';
 $string['classworkerror'] = 'error';
+$string['classworkfilter'] = 'Show copies';
 $string['classworkfull'] = 'Show large';
+$string['classworknone'] = 'No copy has this status.';
 $string['classworknotrun'] = 'not run';
 $string['classworkok'] = 'runs';
 $string['classworkrefresh'] = 'Refresh';
