@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.16.0 (2026-11-23)
+
+- Files of an example for readers: examples with attached files (tiny_codelab 1.22.0) show them in a collapsible
+  Files (n) section under the input where readers can view and edit them, Reset restores them, and runs in Python in
+  the browser, on the CodeLab runner (0.10.0) and on Jobe receive them in the working folder.
+- Requires tiny_codelab 1.22.0.
+
 ## 1.15.0 (2026-11-22)
 
 - The interface in 12 more languages: German, French, Spanish, Italian, Portuguese, Polish, Croatian, Bosnian,
