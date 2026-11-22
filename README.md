@@ -11,7 +11,7 @@ code editor of VS Code ([Monaco](https://microsoft.github.io/monaco-editor/)).
 
 Languages: **C**, **C++**, **Python**, **Java**, **C#**, **JavaScript** (Node.js), **Pascal** and **PHP**.
 
-> Status: **stable** (1.5.0).
+> Status: **stable**.
 
 > **Live demo:** [codelab.tsp.edu.rs](https://codelab.tsp.edu.rs) (look around as a guest, or use `teacher` / `student` with password `Demo-2026`; reset every night)
 
