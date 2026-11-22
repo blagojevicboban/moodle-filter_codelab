@@ -37,7 +37,7 @@ Languages: **C**, **C++**, **Python**, **Java**, **C#**, **JavaScript** (Node.js
   clicks **Class** and sees the copies of the students as cards (name, *runs* / *error* / *not run*, the code),
   refreshed every 20 seconds, with **Show large** for the projector and **Open in my editor** to run one. Capabilities
   `filter/codelab:sharework` (students) and `filter/codelab:viewclasswork` (teachers); in separate groups a teacher
-  sees only their own groups.
+  sees only their own groups. Buttons above the cards filter the copies by status, each with its count (1.14).
 - **The same copy on every device** (1.13): a student who changed an example finds the changed copy on another
   computer or phone too; the newer of the copy in the browser and the copy on the server opens. Examples inserted or
   saved with tiny_codelab 1.18 have an id (class `codelab-id-...`), so copies stay with their example when examples are
@@ -76,7 +76,9 @@ The [CodeLab manual](https://github.com/blagojevicboban/moodle-tiny_codelab/blob
 
 For the class view the filter keeps the last changed copy of an example of each student, with the result of its last
 run and the time (table `filter_codelab_work`); the original code removes it. The Privacy API exports and deletes these
-copies, and they are deleted with their activity, course or user. The student gets their own copies back on another
+copies, and they are deleted with their activity, course or user. A daily scheduled task (1.14) also deletes copies
+left from a removed activity, and copies not changed for longer than the setting **Keep copies for** (365 days by
+default, 0 keeps them). The student gets their own copies back on another
 device (web service `filter_codelab_get_my_work`). The reader's copy of an example also stays in their browser
 (localStorage).
 Programs are run on the Jobe server of tiny_codelab. Python runs in the reader's browser; see the tiny_codelab README.
