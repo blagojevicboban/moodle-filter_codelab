@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.14.0 (2026-11-22)
+
+- Class view: buttons above the copies filter them by status (all, works, error, not run yet), each with its count.
+- A daily scheduled task deletes copies whose activity or course no longer exists, and copies not changed for longer
+  than the new setting Keep copies for (days, 365 by default, 0 keeps them).
+- Class view in separate groups: the teacher's own students are chosen before the limit of 200 copies is applied.
+- A shared copy has the same size limit as a run in tiny_codelab.
+
 ## 1.13.0 (2026-11-22)
 
 - The same copy on every device: a student's changed copy of an example, which already went to the server for the
