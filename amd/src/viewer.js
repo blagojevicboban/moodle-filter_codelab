@@ -32,6 +32,7 @@ import {fullscreenButton} from 'tiny_codelab/fullscreen';
 import {setIcon} from 'tiny_codelab/icons';
 import {RemoteSession, runsInteractively, stepsInteractively} from 'tiny_codelab/remote';
 import {openComplexity} from 'tiny_codelab/complexity';
+import {watchErrors} from 'tiny_codelab/aihint';
 import {classPanel, loadClassStrings, sharer, statusOf} from 'filter_codelab/classwork';
 import {getStrings} from 'core/str';
 import {eventTypes} from 'core_filters/events';
@@ -333,6 +334,19 @@ const toolbarButtons = (s, runs, modes) => {
 };
 
 /**
+ * AI help after an error in the console, when the site allows it on this page (tiny_codelab 1.17).
+ *
+ * @param {Object} block the example
+ * @param {?HTMLElement} panel its console
+ * @param {Object} editor its code editor
+ */
+const aiHelp = (block, panel, editor) => {
+    if (panel && config.aihints && config.contextid) {
+        watchErrors(panel, {contextid: config.contextid, lang: () => block.lang, code: () => editor.getValue()});
+    }
+};
+
+/**
  * Build the viewer of one block in place of the pre element.
  *
  * @param {HTMLElement} pre
@@ -471,6 +485,7 @@ const build = async(pre, index) => {
     session = sessionFor(modes, {block, editor, panel, vars, stdin, buttons});
     complexityPanel(complexityButton, vars, editor);
     classWork(block, index, {editor, panel, toolbar, before: spacer, host});
+    aiHelp(block, panel, editor);
     flowchartPanel(flowchartButton, host, editor, s);
     const themeButton = setIcon(button('', 'theme'), 'theme', s.toggletheme);
     let currentTheme = initialTheme;

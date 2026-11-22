@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.12.0 (2026-11-22)
+
+- AI explanations of errors: with tiny_codelab 1.17 (required) and the setting AI explanations of errors, a button under
+  a compiler message or an error in the console asks the AI of the site to explain it.
+
 ## 1.11.2 (2026-11-21)
 
 - The language files define pluginname too, besides filtername (Moodle Plugins review, #2).
