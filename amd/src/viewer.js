@@ -21,12 +21,13 @@
  * @copyright  2026 Boban Blagojević
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-import {languages, setupLanguages, defaultTheme} from 'tiny_codelab/common';
+import {languages, setupLanguages, browserOnlyLanguages, defaultTheme} from 'tiny_codelab/common';
 import {readBlock, stdinOf, setupOf, filesOf} from 'tiny_codelab/embed';
 import {createEditor, resolveTheme} from 'tiny_codelab/monaco';
 import {createFileTabs} from 'tiny_codelab/filetabs';
 import {run} from 'tiny_codelab/runner';
 import {showRunning, showResult, showError} from 'tiny_codelab/console';
+import {showWebPreview} from 'tiny_codelab/webpreview';
 import {available as pythonAvailable} from 'tiny_codelab/python';
 import {PythonSession} from 'tiny_codelab/session';
 import {fullscreenButton} from 'tiny_codelab/fullscreen';
@@ -486,7 +487,7 @@ const runArea = (s, block, id, viewer) => {
     const details = document.createElement('details');
     details.className = 'filter_codelab-stdin';
     details.open = block.stdin !== '' || READS_INPUT.test(block.code);
-    details.hidden = setupLanguages.includes(block.lang);
+    details.hidden = setupLanguages.includes(block.lang) || browserOnlyLanguages.includes(block.lang);
     const summary = document.createElement('summary');
     summary.textContent = s.input;
     const stdin = document.createElement('textarea');
@@ -654,6 +655,10 @@ const build = async(pre, index) => {
     const getFiles = () => (tabs ? tabs.getFiles() : []);
     const doRun = async() => {
         if (!editor || runButton.disabled) {
+            return;
+        }
+        if (browserOnlyLanguages.includes(block.lang)) {
+            showWebPreview(panel, getMain(), getFiles());
             return;
         }
         if (session) {
