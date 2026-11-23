@@ -24,6 +24,7 @@
 import {languages, setupLanguages, defaultTheme} from 'tiny_codelab/common';
 import {readBlock, stdinOf, setupOf, filesOf} from 'tiny_codelab/embed';
 import {createEditor, resolveTheme} from 'tiny_codelab/monaco';
+import {createFileTabs} from 'tiny_codelab/filetabs';
 import {run} from 'tiny_codelab/runner';
 import {showRunning, showResult, showError} from 'tiny_codelab/console';
 import {available as pythonAvailable} from 'tiny_codelab/python';
@@ -160,10 +161,12 @@ const runModes = (block) => {
  * @param {HTMLElement} options.vars
  * @param {HTMLTextAreaElement} options.stdin
  * @param {Object<string, HTMLButtonElement|null>} options.buttons
+ * @param {function(): string} options.program main program source
  * @param {function(): Array<{name: string, text: string}>} options.files the files as the reader has them now
+ * @param {?function(): void} [options.onStep] called before starting a step session
  * @returns {PythonSession|RemoteSession|null}
  */
-const sessionFor = (modes, {block, editor, panel, vars, stdin, buttons, files}) => {
+const sessionFor = (modes, {block, editor, panel, vars, stdin, buttons, program, files, onStep = null}) => {
     if (!modes.browser && !modes.remote) {
         return null;
     }
@@ -185,13 +188,14 @@ const sessionFor = (modes, {block, editor, panel, vars, stdin, buttons, files}) 
     };
     const session = modes.browser
         ? new PythonSession({base: config.pyodide, editor, panel, vars, onState, files})
-        : new RemoteSession({lang: block.lang, program: () => editor.getValue(), panel, onState, editor, vars,
+        : new RemoteSession({lang: block.lang, program, panel, onState, editor, vars,
             setup: () => block.setup, files, compiler: () => block.compiler || '', std: () => block.std || '',
             sanitize: () => safeOn});
     stepButton?.addEventListener('click', () => {
         if (session.state === 'paused') {
             session.step();
         } else if (session.state === 'idle') {
+            onStep?.();
             session.start(true, stdin.value);
         }
     });
@@ -461,25 +465,24 @@ const savedCopy = async(block, index) => {
  *
  * @param {Object} block the example
  * @param {?HTMLElement} panel its console
- * @param {Object} editor its code editor
+ * @param {function(): string} getCode returns the main program text
  */
-const aiHelp = (block, panel, editor) => {
+const aiHelp = (block, panel, getCode) => {
     if (panel && config.aihints && config.contextid) {
-        watchErrors(panel, {contextid: config.contextid, lang: () => block.lang, code: () => editor.getValue()});
+        watchErrors(panel, {contextid: config.contextid, lang: () => block.lang, code: getCode});
     }
 };
 
 /**
- * The input, the files and the console of an example that runs, added to its viewer.
+ * The input and the console of an example that runs, added to its viewer.
  *
  * @param {Object<string, string>} s strings
  * @param {Object} block of readBlock
  * @param {string} id prefix of the ids
  * @param {HTMLElement} viewer
- * @returns {{stdin: HTMLTextAreaElement, panel: HTMLElement, files: ?Object}} files of filesBox, null without files
+ * @returns {{stdin: HTMLTextAreaElement, panel: HTMLElement}}
  */
 const runArea = (s, block, id, viewer) => {
-    let files = null;
     const details = document.createElement('details');
     details.className = 'filter_codelab-stdin';
     details.open = block.stdin !== '' || READS_INPUT.test(block.code);
@@ -502,13 +505,79 @@ const runArea = (s, block, id, viewer) => {
     panel.tabIndex = 0;
     panel.setAttribute('aria-label', s.output);
     panel.hidden = true;
-    viewer.append(details);
-    if (block.files.length) {
-        files = filesBox(s, block.files, id);
-        viewer.append(files.root);
+    viewer.append(details, panel);
+    return {stdin, panel};
+};
+
+/**
+ * Wire Restore original and debounced local copy saving for a runnable example.
+ *
+ * @param {Object} args
+ * @param {Object} args.block
+ * @param {import('tiny_codelab/monaco').CodeEditor} args.editor
+ * @param {?Object} args.tabs
+ * @param {HTMLTextAreaElement} args.stdin
+ * @param {HTMLButtonElement} args.resetButton
+ * @param {Object} args.store
+ * @param {Object} args.time
+ * @param {HTMLElement} args.note
+ */
+const wireResetAndSave = ({block, editor, tabs, stdin, resetButton, store, time, note}) => {
+    resetButton.addEventListener('click', () => {
+        if (tabs) {
+            tabs.reset();
+            tabs.setMain(block.code);
+        } else {
+            editor.setValue(block.code);
+        }
+        stdin.value = block.stdin;
+        store.remove();
+        time.remove();
+        note.hidden = true;
+    });
+    let timer = null;
+    const onMainEdited = (value) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            if (value === block.code) {
+                store.remove();
+                time.remove();
+                note.hidden = true;
+            } else {
+                store.set(value);
+                time.set(String(Date.now()));
+                note.hidden = false;
+            }
+        }, 500);
+    };
+    if (tabs) {
+        tabs.onMainChange(onMainEdited);
+    } else {
+        editor.onChange(onMainEdited);
     }
-    viewer.append(panel);
-    return {stdin, panel, files};
+};
+
+/**
+ * Hide the raw <pre> source, stdin, setup and companion file blocks once the interactive viewer is ready.
+ *
+ * @param {HTMLElement} pre
+ * @param {Object} block
+ */
+const hideSourceBlocks = (pre, block) => {
+    pre.hidden = true;
+    const stdinEl = stdinOf(pre);
+    if (stdinEl) {
+        stdinEl.hidden = true;
+    }
+    const setupEl = setupOf(pre);
+    if (setupEl) {
+        setupEl.hidden = true;
+    }
+    if (block.files.length) {
+        filesOf(pre).forEach((f) => {
+            f.element.hidden = true;
+        });
+    }
 };
 
 /**
@@ -573,26 +642,16 @@ const build = async(pre, index) => {
         viewer.append(vars);
     }
 
-    const {stdin, panel, files} = block.run ? runArea(s, block, id, viewer) : {stdin: null, panel: null, files: null};
+    const {stdin, panel} = block.run ? runArea(s, block, id, viewer) : {stdin: null, panel: null};
 
-    pre.hidden = true;
-    if (stdinOf(pre)) {
-        stdinOf(pre).hidden = true;
-    }
-    if (setupOf(pre)) {
-        // The tables and data of SQL are never shown to readers.
-        setupOf(pre).hidden = true;
-    }
-    if (files) {
-        // The files are in the viewer now.
-        filesOf(pre).forEach((f) => {
-            f.element.hidden = true;
-        });
-    }
+    hideSourceBlocks(pre, block);
     pre.after(viewer);
 
     let editor = null;
+    let tabs = null;
     let session = null;
+    const getMain = () => (tabs ? tabs.getMain() : editor.getValue());
+    const getFiles = () => (tabs ? tabs.getFiles() : []);
     const doRun = async() => {
         if (!editor || runButton.disabled) {
             return;
@@ -608,8 +667,8 @@ const build = async(pre, index) => {
         runButton.disabled = true;
         await showRunning(panel);
         try {
-            await showResult(panel, await run(block.lang, editor.getValue(), stdin.value, M.cfg.contextid,
-                files ? files.values() : [], block.compiler || '', block.std || ''));
+            await showResult(panel, await run(block.lang, getMain(), stdin.value, M.cfg.contextid,
+                getFiles(), block.compiler || '', block.std || ''));
         } catch (e) {
             await showError(panel, e);
         } finally {
@@ -629,11 +688,24 @@ const build = async(pre, index) => {
         pyodide: block.run ? config.pyodide : '',
         breakpoints: modes.step,
     });
+    if (block.files.length) {
+        tabs = createFileTabs({
+            host,
+            editor,
+            lang: block.lang,
+            initialMain: saved === null ? block.code : saved,
+            files: block.files,
+            readOnlyMain: !block.run,
+            readOnlyFiles: !block.run,
+            label: s.filescount.replace('{$a}', block.files.length + 1),
+        });
+    }
 
-    session = sessionFor(modes, {block, editor, panel, vars, stdin, buttons, files: () => (files ? files.values() : [])});
+    session = sessionFor(modes, {block, editor, panel, vars, stdin, buttons, program: getMain, files: getFiles,
+        onStep: () => tabs?.select(0)});
     complexityPanel(complexityButton, vars, editor);
     classWork(block, index, {editor, panel, toolbar, before: spacer, host});
-    aiHelp(block, panel, editor);
+    aiHelp(block, panel, getMain);
     flowchartPanel(flowchartButton, host, editor, s);
     const themeButton = setIcon(button('', 'theme'), 'theme', s.toggletheme);
     let currentTheme = initialTheme;
@@ -651,29 +723,7 @@ const build = async(pre, index) => {
     toolbar.insertBefore(fullscreenButton({root: viewer, editor, label: s.fullscreen, exitLabel: s.exitfullscreen}), note);
     if (block.run) {
         runButton.addEventListener('click', doRun);
-        resetButton.addEventListener('click', () => {
-            editor.setValue(block.code);
-            stdin.value = block.stdin;
-            files?.reset();
-            store.remove();
-            time.remove();
-            note.hidden = true;
-        });
-        let timer = null;
-        editor.onChange((value) => {
-            clearTimeout(timer);
-            timer = setTimeout(() => {
-                if (value === block.code) {
-                    store.remove();
-                    time.remove();
-                    note.hidden = true;
-                } else {
-                    store.set(value);
-                    time.set(String(Date.now()));
-                    note.hidden = false;
-                }
-            }, 500);
-        });
+        wireResetAndSave({block, editor, tabs, stdin, resetButton, store, time, note});
     }
     copyButton.addEventListener('click', async() => {
         try {
