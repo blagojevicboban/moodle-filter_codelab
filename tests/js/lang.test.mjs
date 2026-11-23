@@ -32,7 +32,8 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const component = basename(readdirSync(join(root, 'lang', 'en')).find((f) => f.endsWith('.php')), '.php');
 
 /** The languages the plugin ships besides English. */
-const LANGUAGES = ['sr_lt', 'sr_cr', 'de', 'fr', 'es', 'it', 'pt', 'pl', 'hr', 'bs', 'sl', 'mk', 'sk', 'cs'];
+const LANGUAGES = ['sr_lt', 'sr_cr', 'de', 'fr', 'es', 'it', 'pt', 'pt_br', 'pl', 'hr', 'bs', 'sl', 'mk', 'sk', 'cs',
+    'tr', 'nl', 'ru', 'uk', 'ro', 'hu', 'bg', 'el', 'sq'];
 
 /**
  * The strings of a language file in their order, from $string['key'] = '...'; (single quotes, \' and \\ escaped).
