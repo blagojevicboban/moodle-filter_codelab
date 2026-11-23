@@ -9,7 +9,10 @@ This filter turns **CodeLab** program examples in Moodle texts into code editors
 The examples are inserted with [tiny_codelab](https://github.com/blagojevicboban/moodle-tiny_codelab). The editor is the
 code editor of VS Code ([Monaco](https://microsoft.github.io/monaco-editor/)).
 
-Languages: **C**, **C++**, **Python**, **Java**, **C#**, **JavaScript** (Node.js), **Pascal** and **PHP**.
+Languages (**27 total**): **C**, **C++**, **Python**, **Java**, **C#**, **JavaScript** (Node.js), **Pascal**, **PHP**,
+**MySQL (MariaDB)**, **HTML / CSS / JS** (sandboxed live preview in the browser), plus **TypeScript**, **Bash**, **Go**,
+**Rust**, **R**, **Ruby**, **Lua**, **Kotlin**, **Perl**, **Octave**, **Julia**, **Scheme**, **Dart**, **Scala**,
+**Elixir**, **Swift** and **Haskell** on the CodeLab runner.
 
 > Status: **stable**.
 

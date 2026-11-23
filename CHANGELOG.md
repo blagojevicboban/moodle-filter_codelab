@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.18.0 (2026-11-23)
+
+- Interface translated into 14 more languages (29 total): Portuguese (Brazil), Turkish, Dutch, Russian, Ukrainian,
+  Romanian, Hungarian, Bulgarian, Greek, Albanian, Japanese, Simplified Chinese, Korean and Arabic.
+- Sandboxed HTML / CSS / JS live preview in the viewer: runs HTML examples with companion CSS and JS tabs directly in
+  the browser without an execution server, hiding standard input.
+- Added CSS card header badges for all 18 new languages (27 languages total).
+- Requires tiny_codelab 1.24.0.
+
 ## 1.17.0 (2026-11-23)
 
 - Multi-file examples: companion source, header and data files of an example appear as tabs above the editor, each
