@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.17.0 (2026-11-23)
+
+- Multi-file examples: companion source, header and data files of an example appear as tabs above the editor, each
+  with its own highlighting.
+- Safe mode for C and C++: a toolbar button runs the example with AddressSanitizer and UndefinedBehaviorSanitizer on
+  the CodeLab runner and marks the line of the error.
+- The compiler profile and the language standard of an example go with interactive runs and runs for grading.
+- Explanations of compiler errors and heap leak warnings come with tiny_codelab 1.23.0, which this version requires.
+
 ## 1.16.0 (2026-11-23)
 
 - Files of an example for readers: examples with attached files (tiny_codelab 1.22.0) show them in a collapsible
