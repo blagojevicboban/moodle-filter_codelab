@@ -185,6 +185,30 @@ pre.codelab.codelab-lang-octave::before {
     content: "CodeLab • Octave";
 }
 
+pre.codelab.codelab-lang-julia::before {
+    content: "CodeLab • Julia";
+}
+
+pre.codelab.codelab-lang-scheme::before {
+    content: "CodeLab • Scheme";
+}
+
+pre.codelab.codelab-lang-dart::before {
+    content: "CodeLab • Dart";
+}
+
+pre.codelab.codelab-lang-scala::before {
+    content: "CodeLab • Scala";
+}
+
+pre.codelab.codelab-lang-elixir::before {
+    content: "CodeLab • Elixir";
+}
+
+pre.codelab.codelab-lang-swift::before {
+    content: "CodeLab • Swift";
+}
+
 pre.codelab.codelab-lang-html::before {
     content: "CodeLab • HTML / CSS / JS";
 }
