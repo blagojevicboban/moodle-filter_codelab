@@ -165,6 +165,26 @@ pre.codelab.codelab-lang-r::before {
     content: "CodeLab • R";
 }
 
+pre.codelab.codelab-lang-ruby::before {
+    content: "CodeLab • Ruby";
+}
+
+pre.codelab.codelab-lang-lua::before {
+    content: "CodeLab • Lua";
+}
+
+pre.codelab.codelab-lang-kotlin::before {
+    content: "CodeLab • Kotlin";
+}
+
+pre.codelab.codelab-lang-perl::before {
+    content: "CodeLab • Perl";
+}
+
+pre.codelab.codelab-lang-octave::before {
+    content: "CodeLab • Octave";
+}
+
 pre.codelab.codelab-lang-html::before {
     content: "CodeLab • HTML / CSS / JS";
 }
