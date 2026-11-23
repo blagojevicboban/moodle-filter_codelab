@@ -145,6 +145,30 @@ pre.codelab.codelab-lang-mysql::before {
     content: "CodeLab • SQL (MySQL)";
 }
 
+pre.codelab.codelab-lang-typescript::before {
+    content: "CodeLab • TypeScript";
+}
+
+pre.codelab.codelab-lang-bash::before {
+    content: "CodeLab • Bash";
+}
+
+pre.codelab.codelab-lang-go::before {
+    content: "CodeLab • Go";
+}
+
+pre.codelab.codelab-lang-rust::before {
+    content: "CodeLab • Rust";
+}
+
+pre.codelab.codelab-lang-r::before {
+    content: "CodeLab • R";
+}
+
+pre.codelab.codelab-lang-html::before {
+    content: "CodeLab • HTML / CSS / JS";
+}
+
 pre.codelab.codelab-run::after {
     content: "▶ Run";
     position: absolute;
