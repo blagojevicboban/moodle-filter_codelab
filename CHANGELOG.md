@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.19.0 (2026-11-25)
+
+- The editor of a C or C++ example tells the language service of the CodeLab runner (tiny_codelab 1.28, runner 0.24)
+  the language standard and the compiler profile of the example, so the typing help checks the code as it is compiled.
+
 ## 1.18.0 (2026-11-23)
 
 - Interface translated into 14 more languages (29 total): Portuguese (Brazil), Turkish, Dutch, Russian, Ukrainian,

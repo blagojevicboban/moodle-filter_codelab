@@ -692,6 +692,8 @@ const build = async(pre, index) => {
         onRun: block.run ? doRun : null,
         pyodide: block.run ? config.pyodide : '',
         breakpoints: modes.step,
+        // C and C++: the standard and the compiler profile for the language service of the runner (tiny_codelab 1.28).
+        build: () => ({compiler: block.compiler || '', std: block.std || ''}),
     });
     if (block.files.length) {
         tabs = createFileTabs({
