@@ -103,5 +103,5 @@ first).
 7. **Release notes** for the upload form, plain sentences and `-` bullets only: no quotes, no parentheses, no `<`, `>`,
    `$`, `{}` and no code-like names (the upload page is behind Cloudflare and blocks such text).
 8. Send the ZIPs and the notes to the maintainer, who uploads them to the Moodle Plugins directory with his account.
-9. **Demo sites** (codelab, algorithm and aisim .tsp.edu.rs) take the plugins from `main` when their demo repository
-   gets a push; the maintainer (or whoever has write on the demo repositories) refreshes them after a release.
+9. **Demo site** demo.codelabedu.com (all nine plugins, every program on CodeLab Cloud) takes the plugins from `main`
+   by itself within 15 minutes of a push; nothing to refresh by hand. Link the Live demo as https://demo.codelabedu.com.
