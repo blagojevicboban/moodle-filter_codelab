@@ -16,7 +16,7 @@ Languages (**27 total**): **C**, **C++**, **Python**, **Java**, **C#**, **JavaSc
 
 > Status: **stable**.
 
-> **Live demo:** [codelab.tsp.edu.rs](https://codelab.tsp.edu.rs) (look around as a guest, or use `teacher` / `student` with password `Demo-2026`; reset every night)
+> **Live demo:** [demo.codelabedu.com](https://demo.codelabedu.com) (look around as a guest, or use `teacher` / `student` with password `Demo-2026`; reset every night)
 
 > **Important:** after installing, switch the filter on in *Site administration → Plugins → Filters → Manage filters*
 > (**CodeLab → On**). Until then, readers see the examples as plain code: they cannot edit or run them.
