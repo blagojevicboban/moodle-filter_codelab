@@ -495,3 +495,12 @@ pre.codelab.codelab-theme-hc-black.codelab-run::after {
     background: #fff;
     color: #1d2125;
 }
+
+/* Panels beside the code (tiny_codelab/layout): clip without a scroll box, so the code column can stay in view. */
+.filter_codelab-viewer.tiny_codelab-side:not(.tiny_codelab-fullscreen) {
+    overflow: clip;
+}
+
+.filter_codelab-viewer.filter_codelab-dark .tiny_codelab-layout-side {
+    border-left-color: #3c3c3c;
+}

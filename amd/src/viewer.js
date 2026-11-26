@@ -31,6 +31,7 @@ import {showWebPreview} from 'tiny_codelab/webpreview';
 import {available as pythonAvailable} from 'tiny_codelab/python';
 import {PythonSession} from 'tiny_codelab/session';
 import {fullscreenButton} from 'tiny_codelab/fullscreen';
+import {panelLayout} from 'tiny_codelab/layout';
 import {setIcon} from 'tiny_codelab/icons';
 import {RemoteSession, runsInteractively, stepsInteractively} from 'tiny_codelab/remote';
 import {openComplexity} from 'tiny_codelab/complexity';
@@ -66,7 +67,7 @@ const loadStrings = async() => {
     if (!strings) {
         const keys = ['run', 'reset', 'copy', 'copied', 'input', 'output', 'editedcopy', 'step', 'stop', 'fullscreen',
             'exitfullscreen', 'toggletheme', 'complexity', 'flowchart', 'flowchartwarnings', 'flowchartfailed', 'filescount',
-            'filetext', 'safemode']
+            'filetext', 'safemode', 'panelbottom', 'panelside', 'panelresize']
             .concat(Object.keys(languages).map((lang) => `lang_${lang}`));
         const values = await getStrings(keys.map((key) => ({key, component: 'tiny_codelab'})));
         strings = Object.fromEntries(keys.map((key, i) => [key, values[i]]));
@@ -635,7 +636,11 @@ const build = async(pre, index) => {
 
     const host = document.createElement('div');
     host.className = 'filter_codelab-editor';
-    viewer.append(toolbar, host);
+    // The code column: the editor with its file tabs; the panels after it go below or beside it (tiny_codelab/layout).
+    const main = document.createElement('div');
+    main.className = 'filter_codelab-main';
+    main.append(host);
+    viewer.append(toolbar, main);
     const vars = document.createElement('div');
     vars.className = 'tiny_codelab-vars';
     vars.hidden = true;
@@ -711,9 +716,9 @@ const build = async(pre, index) => {
     session = sessionFor(modes, {block, editor, panel, vars, stdin, buttons, program: getMain, files: getFiles,
         onStep: () => tabs?.select(0)});
     complexityPanel(complexityButton, vars, editor);
-    classWork(block, index, {editor, panel, toolbar, before: spacer, host});
+    classWork(block, index, {editor, panel, toolbar, before: spacer, host: main});
     aiHelp(block, panel, getMain);
-    flowchartPanel(flowchartButton, host, editor, s);
+    flowchartPanel(flowchartButton, main, editor, s);
     const themeButton = setIcon(button('', 'theme'), 'theme', s.toggletheme);
     let currentTheme = initialTheme;
     themeButton.addEventListener('click', () => {
@@ -726,6 +731,12 @@ const build = async(pre, index) => {
         }
         storage('codelab_theme').set(currentTheme);
     });
+    // An example with panels (Run, Step) chooses where they are: below or beside the code, as in VS Code.
+    if (block.run || modes.step) {
+        const layout = panelLayout({root: viewer, main, className: 'btn btn-secondary btn-sm',
+            labels: {bottom: s.panelbottom, side: s.panelside, resize: s.panelresize}});
+        layout.buttons.forEach((b) => toolbar.insertBefore(b, note));
+    }
     toolbar.insertBefore(themeButton, note);
     toolbar.insertBefore(fullscreenButton({root: viewer, editor, label: s.fullscreen, exitLabel: s.exitfullscreen}), note);
     if (block.run) {

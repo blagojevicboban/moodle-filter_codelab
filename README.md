@@ -23,6 +23,8 @@ Languages (**27 total**): **C**, **C++**, **Python**, **Java**, **C#**, **JavaSc
 
 ## Features
 
+- **Panels below or beside the code** (tiny_codelab 1.32): on a wide page Step, the variables, the input and the console
+  go to the right of the code; two icon buttons in the toolbar put them below or beside it, as in VS Code.
 - **Theme Toggle**: Readers can switch between light and dark VS Code themes directly on the block.
 - **Run**: the program is compiled and run on the [Jobe](https://github.com/trampgeek/jobe) server of tiny_codelab.
   The output appears under the editor. An input field holds the input of the program, prefilled with the example's
@@ -65,7 +67,7 @@ The [CodeLab manual](https://github.com/blagojevicboban/moodle-tiny_codelab/blob
 
 - Moodle 4.5 to 5.3
 - PHP 8.2+
-- [tiny_codelab](https://github.com/blagojevicboban/moodle-tiny_codelab) 1.20.0 or newer, installed first
+- [tiny_codelab](https://github.com/blagojevicboban/moodle-tiny_codelab) 1.32.0 or newer, installed first
 
 ## The CodeLab plugins
 

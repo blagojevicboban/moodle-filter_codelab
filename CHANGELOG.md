@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.20.0 (2026-11-26)
+
+- Panels below or beside the code, as in VS Code (tiny_codelab 1.32): on a wide page the Step panel, the variables,
+  Complexity, Flowchart, the input and the console of an example go beside the code by default; two icon buttons in
+  the toolbar choose the place, and a bar between the columns changes their widths. Requires tiny_codelab 1.32.0.
+
 ## 1.19.0 (2026-11-25)
 
 - The editor of a C or C++ example tells the language service of the CodeLab runner (tiny_codelab 1.28, runner 0.24)
