@@ -274,9 +274,10 @@ const complexityPanel = (toggle, after, editor) => {
 };
 
 /**
- * The flowchart of a Python example (tiny_algorithm: Python to diagram, and its runner with Step, the watch and the
- * generated code), under the editor; made again from the current code each time it is opened. The modules of the
- * algorithm plugins are loaded only then, so CodeLab works without them.
+ * The flowchart of a Python example (tiny_algorithm: Python to diagram, and its runner with Step and the watch;
+ * the generated code panel is hidden since the CodeLab editor already shows the code), under the editor; made again
+ * from the current code each time it is opened. The modules of the algorithm plugins are loaded only then, so CodeLab
+ * works without them.
  *
  * @param {?HTMLButtonElement} toggle none when the example is not Python or the site has no tiny_algorithm
  * @param {HTMLElement} after the panel goes after this element
@@ -316,7 +317,7 @@ const flowchartPanel = (toggle, after, editor, s) => {
             const host = document.createElement('div');
             host.className = 'tiny_algorithm-viewer-host';
             panel.append(host);
-            new runner.AlgorithmRunner(host, program, {lang: document.documentElement.lang});
+            new runner.AlgorithmRunner(host, program, {lang: document.documentElement.lang, showCode: false});
         } catch (e) {
             const error = document.createElement('div');
             error.className = 'text-danger small';
@@ -722,7 +723,7 @@ const build = async(pre, index) => {
     const themeButton = setIcon(button('', 'theme'), 'theme', s.toggletheme);
     let currentTheme = initialTheme;
     themeButton.addEventListener('click', () => {
-        currentTheme = currentTheme === 'vs-dark' ? 'vs' : 'vs-dark';
+        currentTheme = currentTheme === 'vs' ? 'vs-dark' : 'vs';
         editor.setTheme(currentTheme);
         if (currentTheme === 'vs-dark' || currentTheme === 'hc-black') {
             viewer.classList.add('filter_codelab-dark');

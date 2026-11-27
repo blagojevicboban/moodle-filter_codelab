@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.20.1 (2026-11-27)
+
+- Flowchart panel hides the redundant generated-code pane (showCode: false) since the CodeLab editor already shows the
+  Python code.
+- Polished viewer toolbar and language pill badge, Dark mode styles for Class view and Flowchart (including Watch table,
+  toggles and dark native scrollbars), and High Contrast Dark theme toggle fix.
+
 ## 1.20.0 (2026-11-26)
 
 - Panels below or beside the code, as in VS Code (tiny_codelab 1.32): on a wide page the Step panel, the variables,

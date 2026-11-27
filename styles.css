@@ -289,13 +289,14 @@ pre.codelab-file::before {
 .filter_codelab-viewer.filter_codelab-dark {
     border-color: #3c3c3c;
     background: #1e1e1e;
-    color: #cccccc;
+    color: #ccc;
+    color-scheme: dark;
 }
 
 .filter_codelab-viewer.filter_codelab-dark .filter_codelab-toolbar {
     background: #252526;
     border-bottom: 1px solid #3c3c3c;
-    color: #cccccc;
+    color: #ccc;
 }
 
 .filter_codelab-viewer.filter_codelab-dark .filter_codelab-lang {
@@ -311,7 +312,7 @@ pre.codelab-file::before {
 .filter_codelab-viewer.filter_codelab-dark .filter_codelab-files {
     border-top: 1px solid #3c3c3c;
     background: #1e1e1e;
-    color: #cccccc;
+    color: #ccc;
 }
 
 .filter_codelab-viewer.filter_codelab-dark .filter_codelab-stdin textarea,
@@ -332,7 +333,8 @@ pre.codelab-file::before {
     color: #89d185;
 }
 
-.filter_codelab-viewer.filter_codelab-dark .tiny_codelab-console-status:not(.tiny_codelab-status-ok):not(.tiny_codelab-status-running),
+.filter_codelab-viewer.filter_codelab-dark
+.tiny_codelab-console-status:not(.tiny_codelab-status-ok):not(.tiny_codelab-status-running),
 .filter_codelab-viewer.filter_codelab-dark .tiny_codelab-console-compile,
 .filter_codelab-viewer.filter_codelab-dark .tiny_codelab-console-error {
     color: #f48771;
@@ -353,7 +355,7 @@ pre.codelab.codelab-theme-vs-dark {
 pre.codelab.codelab-theme-vs-dark::before {
     background: #252526;
     border-bottom: 1px solid #3c3c3c;
-    color: #cccccc;
+    color: #ccc;
 }
 
 pre.codelab.codelab-theme-vs-dark.codelab-run::after {
@@ -364,8 +366,8 @@ pre.codelab.codelab-theme-vs-dark.codelab-run::after {
 
 /* High Contrast Dark theme cards for pre.codelab */
 pre.codelab.codelab-theme-hc-black {
-    background-color: #000000;
-    color: #ffffff;
+    background-color: #000;
+    color: #fff;
     border-color: #6fc3df;
     border-left-color: #6fc3df;
 }
@@ -377,7 +379,7 @@ pre.codelab.codelab-theme-hc-black::before {
 }
 
 pre.codelab.codelab-theme-hc-black.codelab-run::after {
-    background: #000000;
+    background: #000;
     color: #6fc3df;
     border-color: #6fc3df;
 }
@@ -538,4 +540,41 @@ pre.codelab.codelab-theme-hc-black.codelab-run::after {
 
 .filter_codelab-viewer.filter_codelab-dark .filter_codelab-class-time {
     color: #9d9d9d;
+}
+
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-flowchart .tiny_algorithm-view-svg {
+    background: #f1f5f9;
+    border-color: #3c3c3c;
+}
+
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-flowchart .tiny_algorithm-toggle[aria-pressed="false"] {
+    background: #1e1e1e;
+    border-color: #4b5563;
+    color: #cbd5e1;
+}
+
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-flowchart .tiny_algorithm-toggle[aria-pressed="true"] {
+    background: #1e3a5f;
+    border-color: #3b82f6;
+    color: #dbeafe;
+}
+
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-flowchart .tiny_algorithm-watch .tiny_algorithm-watch-empty {
+    color: #9d9d9d;
+}
+
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-flowchart .tiny_algorithm-watch th,
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-flowchart .tiny_algorithm-watch td {
+    border-color: #3c3c3c;
+    color: #e2e8f0;
+}
+
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-flowchart .tiny_algorithm-watch td.tiny_algorithm-changed {
+    background: #4b3d12;
+    color: #fef3c7;
+}
+
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-flowchart .tiny_algorithm-viewer.tiny_algorithm-fullscreen {
+    background: #1e1e1e;
+    color: #e2e8f0;
 }
