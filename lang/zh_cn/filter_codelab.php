@@ -28,6 +28,7 @@ $string['classwork'] = '班级';
 $string['classworkall'] = '全部';
 $string['classworkclose'] = '关闭';
 $string['classworkcount'] = '学生副本：{$a}';
+$string['classworkdiff'] = '显示更改';
 $string['classworkempty'] = '尚无学生修改过此示例。';
 $string['classworkerror'] = '错误';
 $string['classworkfilter'] = '显示副本';

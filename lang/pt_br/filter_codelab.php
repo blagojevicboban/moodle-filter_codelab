@@ -28,6 +28,7 @@ $string['classwork'] = 'Turma';
 $string['classworkall'] = 'Todas';
 $string['classworkclose'] = 'Fechar';
 $string['classworkcount'] = 'Cópias dos alunos: {$a}';
+$string['classworkdiff'] = 'Mostrar alterações';
 $string['classworkempty'] = 'Nenhum aluno alterou este exemplo ainda.';
 $string['classworkerror'] = 'erro';
 $string['classworkfilter'] = 'Mostrar cópias';

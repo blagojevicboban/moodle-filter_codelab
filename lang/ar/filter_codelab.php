@@ -28,6 +28,7 @@ $string['classwork'] = 'الصف';
 $string['classworkall'] = 'الكل';
 $string['classworkclose'] = 'إغلاق';
 $string['classworkcount'] = 'نسخ الطلاب: {$a}';
+$string['classworkdiff'] = 'عرض التغييرات';
 $string['classworkempty'] = 'لم يقم أي طالب بتعديل هذا المثال بعد.';
 $string['classworkerror'] = 'خطأ';
 $string['classworkfilter'] = 'عرض النسخ';

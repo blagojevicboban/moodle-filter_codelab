@@ -28,6 +28,7 @@ $string['classwork'] = 'Klasa';
 $string['classworkall'] = 'Wszystkie';
 $string['classworkclose'] = 'Zamknij';
 $string['classworkcount'] = 'Kopie uczniów: {$a}';
+$string['classworkdiff'] = 'Pokaż zmiany';
 $string['classworkempty'] = 'Żaden uczeń nie zmienił jeszcze tego przykładu.';
 $string['classworkerror'] = 'błąd';
 $string['classworkfilter'] = 'Pokaż kopie';

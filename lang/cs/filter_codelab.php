@@ -28,6 +28,7 @@ $string['classwork'] = 'Třída';
 $string['classworkall'] = 'Všechny';
 $string['classworkclose'] = 'Zavřít';
 $string['classworkcount'] = 'Kopie žáků: {$a}';
+$string['classworkdiff'] = 'Zobrazit změny';
 $string['classworkempty'] = 'Žádný žák zatím tento příklad nezměnil.';
 $string['classworkerror'] = 'chyba';
 $string['classworkfilter'] = 'Zobrazit kopie';

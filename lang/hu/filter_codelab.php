@@ -28,6 +28,7 @@ $string['classwork'] = 'Osztály';
 $string['classworkall'] = 'Mind';
 $string['classworkclose'] = 'Bezárás';
 $string['classworkcount'] = 'Tanulók másolatai: {$a}';
+$string['classworkdiff'] = 'Változások megjelenítése';
 $string['classworkempty'] = 'Még egyetlen tanuló sem módosította ezt a példát.';
 $string['classworkerror'] = 'hiba';
 $string['classworkfilter'] = 'Másolatok megjelenítése';

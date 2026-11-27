@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.21.0 (2026-11-28)
+
+- SQL Tables button on MySQL examples with a hidden CREATE TABLE setup: opens the schema and sample-rows panel beside
+  or below the editor (requires tiny_codelab 1.35.0).
+- Class view "Show changes" toggle: highlights added and removed lines compared to the teacher's starter example in
+  both student cards and the full-screen projector view.
+
 ## 1.20.1 (2026-11-27)
 
 - Flowchart panel hides the redundant generated-code pane (showCode: false) since the CodeLab editor already shows the

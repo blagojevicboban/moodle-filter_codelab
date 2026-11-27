@@ -28,6 +28,7 @@ $string['classwork'] = 'Sınıf';
 $string['classworkall'] = 'Tümü';
 $string['classworkclose'] = 'Kapat';
 $string['classworkcount'] = 'Öğrenci kopyaları: {$a}';
+$string['classworkdiff'] = 'Değişiklikleri göster';
 $string['classworkempty'] = 'Henüz hiçbir öğrenci bu örneği değiştirmedi.';
 $string['classworkerror'] = 'hata';
 $string['classworkfilter'] = 'Kopyaları göster';

@@ -28,6 +28,7 @@ $string['classwork'] = 'Klasse';
 $string['classworkall'] = 'Alle';
 $string['classworkclose'] = 'Schließen';
 $string['classworkcount'] = 'Kopien der Lernenden: {$a}';
+$string['classworkdiff'] = 'Änderungen anzeigen';
 $string['classworkempty'] = 'Noch kein Lernender hat dieses Beispiel geändert.';
 $string['classworkerror'] = 'Fehler';
 $string['classworkfilter'] = 'Kopien anzeigen';

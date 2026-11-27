@@ -28,6 +28,7 @@ $string['classwork'] = 'Clasă';
 $string['classworkall'] = 'Toate';
 $string['classworkclose'] = 'Închide';
 $string['classworkcount'] = 'Copiile elevilor: {$a}';
+$string['classworkdiff'] = 'Arată modificările';
 $string['classworkempty'] = 'Niciun elev nu a modificat încă acest exemplu.';
 $string['classworkerror'] = 'eroare';
 $string['classworkfilter'] = 'Afișează copiile';

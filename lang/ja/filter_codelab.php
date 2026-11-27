@@ -28,6 +28,7 @@ $string['classwork'] = 'クラス';
 $string['classworkall'] = 'すべて';
 $string['classworkclose'] = '閉じる';
 $string['classworkcount'] = '学生のコピー: {$a}';
+$string['classworkdiff'] = '変更点を表示';
 $string['classworkempty'] = 'このサンプルを変更した学生はまだいません。';
 $string['classworkerror'] = 'エラー';
 $string['classworkfilter'] = 'コピーを表示';

@@ -28,6 +28,7 @@ $string['classwork'] = 'Klasa';
 $string['classworkall'] = 'Të gjitha';
 $string['classworkclose'] = 'Mbyll';
 $string['classworkcount'] = 'Kopjet e nxënësve: {$a}';
+$string['classworkdiff'] = 'Shfaq ndryshimet';
 $string['classworkempty'] = 'Asnjë nxënës nuk e ka ndryshuar ende këtë shembull.';
 $string['classworkerror'] = 'gabim';
 $string['classworkfilter'] = 'Shfaq kopjet';

@@ -28,6 +28,7 @@ $string['classwork'] = 'Τάξη';
 $string['classworkall'] = 'Όλα';
 $string['classworkclose'] = 'Κλείσιμο';
 $string['classworkcount'] = 'Αντίγραφα των μαθητών: {$a}';
+$string['classworkdiff'] = 'Εμφάνιση αλλαγών';
 $string['classworkempty'] = 'Κανένας μαθητής δεν έχει τροποποιήσει αυτό το παράδειγμα ακόμη.';
 $string['classworkerror'] = 'σφάλμα';
 $string['classworkfilter'] = 'Εμφάνιση αντιγράφων';

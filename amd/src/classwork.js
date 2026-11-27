@@ -32,8 +32,9 @@ const REFRESH_SECONDS = 20;
 /** Lines of the code shown on a card. */
 const CARD_LINES = 12;
 
-const KEYS = ['classwork', 'classworkall', 'classworkclose', 'classworkcount', 'classworkempty', 'classworkerror',
-    'classworkfilter', 'classworkfull', 'classworknone', 'classworknotrun', 'classworkok', 'classworkrefresh', 'classworkuse'];
+const KEYS = ['classwork', 'classworkall', 'classworkclose', 'classworkcount', 'classworkdiff', 'classworkempty',
+    'classworkerror', 'classworkfilter', 'classworkfull', 'classworknone', 'classworknotrun', 'classworkok',
+    'classworkrefresh', 'classworkuse'];
 
 /** The filters of the Class panel, in the order of their buttons: all copies, or one status ('' is not run). */
 export const FILTERS = ['all', 'ok', 'error', ''];
@@ -159,13 +160,90 @@ const button = (text, action) => {
 };
 
 /**
+ * Compute a simple line-by-line LCS diff between the starter code and a student's copy.
+ *
+ * @param {string} original
+ * @param {string} modified
+ * @returns {Array<{type: string, text: string}>}
+ */
+export const diffLines = (original, modified) => {
+    const a = String(original || '').split('\n');
+    const b = String(modified || '').split('\n');
+    const m = a.length;
+    const n = b.length;
+    const dp = Array.from({length: m + 1}, () => new Uint16Array(n + 1));
+    for (let i = m - 1; i >= 0; i--) {
+        for (let j = n - 1; j >= 0; j--) {
+            dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+        }
+    }
+    const out = [];
+    let i = 0;
+    let j = 0;
+    while (i < m && j < n) {
+        if (a[i] === b[j]) {
+            out.push({type: 'same', text: a[i++]});
+            j++;
+        } else if (dp[i + 1][j] >= dp[i][j + 1]) {
+            out.push({type: 'del', text: a[i++]});
+        } else {
+            out.push({type: 'add', text: b[j++]});
+        }
+    }
+    while (i < m) {
+        out.push({type: 'del', text: a[i++]});
+    }
+    while (j < n) {
+        out.push({type: 'add', text: b[j++]});
+    }
+    return out;
+};
+
+/**
+ * Render either plain code or highlighted diff lines into a <pre> element.
+ *
+ * @param {string} className
+ * @param {string} code
+ * @param {string} original
+ * @param {boolean} showDiff
+ * @param {number} maxLines 0 for unlimited
+ * @returns {HTMLElement}
+ */
+const renderCodePre = (className, code, original, showDiff, maxLines = 0) => {
+    const pre = el('pre', className);
+    if (!showDiff) {
+        const lines = code.split('\n');
+        pre.textContent = maxLines && lines.length > maxLines
+            ? `${lines.slice(0, maxLines).join('\n')}\n\u2026` : code;
+        return pre;
+    }
+    const items = diffLines(original, code);
+    const keep = items.filter((item, idx) => item.type !== 'same' ||
+        (idx > 0 && items[idx - 1].type !== 'same') ||
+        (idx + 1 < items.length && items[idx + 1].type !== 'same'));
+    const shown = maxLines ? keep.slice(0, maxLines) : keep;
+    const prefixes = {add: '+ ', del: '- ', same: '  '};
+    shown.forEach((item) => {
+        const prefix = prefixes[item.type] || '  ';
+        const line = el('span', `filter_codelab-diff-${item.type}`, `${prefix}${item.text}\n`);
+        pre.append(line);
+    });
+    if (maxLines && keep.length > maxLines) {
+        pre.append(el('span', 'filter_codelab-diff-same', '\u2026'));
+    }
+    return pre;
+};
+
+/**
  * One copy shown large over the page (for the projector); Escape or Close ends it.
  *
  * @param {Object} copy
  * @param {Object<string, string>} s strings
  * @param {HTMLElement} back the element that gets the focus again
+ * @param {string} original
+ * @param {boolean} showDiff
  */
-const showLarge = (copy, s, back) => {
+const showLarge = (copy, s, back, original, showDiff) => {
     const overlay = el('div', 'filter_codelab-class-full');
     overlay.setAttribute('role', 'dialog');
     overlay.setAttribute('aria-modal', 'true');
@@ -173,7 +251,7 @@ const showLarge = (copy, s, back) => {
     const head = el('div', 'filter_codelab-class-fullhead');
     const close = button(s.classworkclose, 'classfullclose');
     head.append(el('strong', '', copy.fullname), close);
-    const pre = el('pre', 'filter_codelab-class-fullcode', copy.code);
+    const pre = renderCodePre('filter_codelab-class-fullcode', copy.code, original, showDiff, 0);
     overlay.append(head, pre);
     document.body.append(overlay);
     const end = () => {
@@ -200,8 +278,9 @@ const showLarge = (copy, s, back) => {
  * @param {{contextid: number}} work
  * @param {string} workkey
  * @param {function(string): void} use opens a copy in the teacher's editor
+ * @param {string} [original] starter code of the example, for highlighting changes
  */
-export const classPanel = async(toggle, after, work, workkey, use) => {
+export const classPanel = async(toggle, after, work, workkey, use, original = '') => {
     const s = await loadClassStrings();
     const panel = el('div', 'filter_codelab-class');
     panel.hidden = true;
@@ -209,8 +288,9 @@ export const classPanel = async(toggle, after, work, workkey, use) => {
     toggle.setAttribute('aria-expanded', 'false');
     let timer = null;
     const status = {ok: s.classworkok, error: s.classworkerror, '': s.classworknotrun};
-    // The chosen filter and the last copies: the filter stays when the panel refreshes.
+    // The chosen filter, diff toggle and the last copies: they stay when the panel refreshes.
     let filter = 'all';
+    let showDiff = false;
     let last = [];
 
     /**
@@ -248,9 +328,18 @@ export const classPanel = async(toggle, after, work, workkey, use) => {
         count.setAttribute('role', 'status');
         const refresh = button(s.classworkrefresh, 'classrefresh');
         refresh.addEventListener('click', load);
+        const diffBtn = original ? button(s.classworkdiff, 'classdiff') : null;
+        if (diffBtn) {
+            diffBtn.setAttribute('aria-pressed', showDiff ? 'true' : 'false');
+            diffBtn.classList.toggle('active', showDiff);
+            diffBtn.addEventListener('click', () => {
+                showDiff = !showDiff;
+                draw(last);
+            });
+        }
         const close = button(s.classworkclose, 'classclose');
         close.addEventListener('click', () => toggle.click());
-        head.append(count, refresh, close);
+        [count, diffBtn, refresh, close].filter(Boolean).forEach((b) => head.append(b));
         panel.append(head);
         if (!copies.length) {
             panel.append(el('p', 'filter_codelab-class-empty mb-0', s.classworkempty));
@@ -275,12 +364,10 @@ export const classPanel = async(toggle, after, work, workkey, use) => {
             const time = el('span', 'filter_codelab-class-time',
                 new Date(copy.timemodified * 1000).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}));
             top.append(el('strong', '', copy.fullname), badge, time);
-            const lines = copy.code.split('\n');
-            const code = el('pre', 'filter_codelab-class-code',
-                lines.slice(0, CARD_LINES).join('\n') + (lines.length > CARD_LINES ? '\n…' : ''));
+            const code = renderCodePre('filter_codelab-class-code', copy.code, original, showDiff, CARD_LINES);
             const tools = el('div', 'filter_codelab-class-tools');
             const large = button(s.classworkfull, 'classfull');
-            large.addEventListener('click', () => showLarge(copy, s, large));
+            large.addEventListener('click', () => showLarge(copy, s, large, original, showDiff));
             const open = button(s.classworkuse, 'classuse');
             open.addEventListener('click', () => use(copy.code));
             tools.append(large, open);

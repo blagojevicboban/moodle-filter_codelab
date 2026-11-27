@@ -28,6 +28,7 @@ $string['classwork'] = 'Клас';
 $string['classworkall'] = 'Усі';
 $string['classworkclose'] = 'Закрити';
 $string['classworkcount'] = 'Копії учнів: {$a}';
+$string['classworkdiff'] = 'Показати зміни';
 $string['classworkempty'] = 'Ще жоден учень не змінював цей приклад.';
 $string['classworkerror'] = 'помилка';
 $string['classworkfilter'] = 'Показати копії';

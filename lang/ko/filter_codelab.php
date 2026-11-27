@@ -28,6 +28,7 @@ $string['classwork'] = '학급';
 $string['classworkall'] = '전체';
 $string['classworkclose'] = '닫기';
 $string['classworkcount'] = '학생 사본: {$a}';
+$string['classworkdiff'] = '변경 사항 보기';
 $string['classworkempty'] = '아직 이 예제를 수정한 학생이 없습니다.';
 $string['classworkerror'] = '오류';
 $string['classworkfilter'] = '사본 표시';

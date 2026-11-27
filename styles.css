@@ -578,3 +578,37 @@ pre.codelab.codelab-theme-hc-black.codelab-run::after {
     background: #1e1e1e;
     color: #e2e8f0;
 }
+
+.filter_codelab-diff-add,
+.filter_codelab-diff-del,
+.filter_codelab-diff-same {
+    display: block;
+}
+
+.filter_codelab-diff-add {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.filter_codelab-diff-del {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.filter_codelab-diff-same {
+    color: #6a737b;
+}
+
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-diff-add {
+    background: #14432a;
+    color: #bbf7d0;
+}
+
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-diff-del {
+    background: #4c1d24;
+    color: #fecaca;
+}
+
+.filter_codelab-viewer.filter_codelab-dark .filter_codelab-diff-same {
+    color: #9d9d9d;
+}

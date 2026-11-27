@@ -28,6 +28,7 @@ $string['classwork'] = 'Razred';
 $string['classworkall'] = 'Sve';
 $string['classworkclose'] = 'Zatvori';
 $string['classworkcount'] = 'Kopije učenika: {$a}';
+$string['classworkdiff'] = 'Prikaži izmjene';
 $string['classworkempty'] = 'Nijedan učenik još nije promijenio ovaj primjer.';
 $string['classworkerror'] = 'pogreška';
 $string['classworkfilter'] = 'Prikaži kopije';

@@ -35,6 +35,7 @@ import {panelLayout} from 'tiny_codelab/layout';
 import {setIcon} from 'tiny_codelab/icons';
 import {RemoteSession, runsInteractively, stepsInteractively} from 'tiny_codelab/remote';
 import {openComplexity} from 'tiny_codelab/complexity';
+import {hasSqlSchema, renderSqlSchema} from 'tiny_codelab/sqlschema';
 import {watchErrors} from 'tiny_codelab/aihint';
 import {classPanel, loadClassStrings, sharer, statusOf} from 'filter_codelab/classwork';
 import Ajax from 'core/ajax';
@@ -67,7 +68,7 @@ const loadStrings = async() => {
     if (!strings) {
         const keys = ['run', 'reset', 'copy', 'copied', 'input', 'output', 'editedcopy', 'step', 'stop', 'fullscreen',
             'exitfullscreen', 'toggletheme', 'complexity', 'flowchart', 'flowchartwarnings', 'flowchartfailed', 'filescount',
-            'filetext', 'safemode', 'panelbottom', 'panelside', 'panelresize']
+            'filetext', 'safemode', 'sqlschema', 'panelbottom', 'panelside', 'panelresize']
             .concat(Object.keys(languages).map((lang) => `lang_${lang}`));
         const values = await getStrings(keys.map((key) => ({key, component: 'tiny_codelab'})));
         strings = Object.fromEntries(keys.map((key, i) => [key, values[i]]));
@@ -149,7 +150,10 @@ const runModes = (block) => {
     const remote = block.run && runsInteractively(config.interactive, block.lang);
     // Python as a flowchart, drawn by the algorithm plugins when the site has them (tiny_algorithm 2.13 or newer).
     const flowchart = block.lang === 'python' && Boolean(config.flowchart);
-    return {browser, remote, step: browser || (remote && stepsInteractively(config.interactive, block.lang)), flowchart};
+    // MySQL with hidden CREATE TABLE setup: show a Tables button with schema and sample rows.
+    const sqlschema = block.lang === 'mysql' && hasSqlSchema(block.setup);
+    return {browser, remote, step: browser || (remote && stepsInteractively(config.interactive, block.lang)),
+        flowchart, sqlschema};
 };
 
 /**
@@ -328,6 +332,37 @@ const flowchartPanel = (toggle, after, editor, s) => {
 };
 
 /**
+ * The SQL schema and sample-rows panel of a MySQL example with a hidden setup, toggled by the Tables button.
+ *
+ * @param {?HTMLButtonElement} toggle none when the example is not MySQL or has no CREATE TABLE in setup
+ * @param {HTMLElement} after the panel goes after this element
+ * @param {string} setup hidden SQL setup script
+ */
+const tablesPanel = (toggle, after, setup) => {
+    if (!toggle) {
+        return;
+    }
+    const panel = document.createElement('div');
+    panel.className = 'tiny_codelab-sqlschema';
+    panel.hidden = true;
+    after.after(panel);
+    toggle.setAttribute('aria-expanded', 'false');
+    let rendered = false;
+    toggle.addEventListener('click', async() => {
+        if (!panel.hidden) {
+            panel.hidden = true;
+            toggle.setAttribute('aria-expanded', 'false');
+            return;
+        }
+        if (!rendered) {
+            rendered = await renderSqlSchema(panel, setup);
+        }
+        panel.hidden = !rendered;
+        toggle.setAttribute('aria-expanded', String(rendered));
+    });
+};
+
+/**
  * The class view of an example: a student sends the changed copy and the result of each run; a teacher gets the Class
  * button and panel (filter_codelab/classwork).
  *
@@ -360,7 +395,7 @@ const classWork = async(block, index, {editor, panel, toolbar, before, host}) =>
         const cs = await loadClassStrings();
         const toggle = button(cs.classwork, 'classwork');
         toolbar.insertBefore(toggle, before);
-        await classPanel(toggle, host, work, workkey, (code) => editor.setValue(code));
+        await classPanel(toggle, host, work, workkey, (code) => editor.setValue(code), block.code);
     }
 };
 
@@ -390,6 +425,7 @@ const toolbarButtons = (s, runs, modes, lang = '') => {
         // Lines run against n (tiny_codelab/complexity): Python in the browser counts them.
         complexityButton: modes.browser ? button(s.complexity, 'complexity') : null,
         flowchartButton: modes.flowchart ? button(s.flowchart, 'flowchart') : null,
+        tablesButton: modes.sqlschema ? button(s.sqlschema, 'tables') : null,
         stopButton,
         resetButton: runs ? setIcon(button('', 'reset'), 'reset', s.reset) : null,
         copyButton: setIcon(button('', 'copy'), 'copy', s.copy),
@@ -622,13 +658,14 @@ const build = async(pre, index) => {
     toolbar.append(badge);
     const modes = runModes(block);
     const buttons = toolbarButtons(s, block.run, modes, block.lang);
-    const {runButton, stepButton, safeButton, complexityButton, flowchartButton, stopButton, resetButton, copyButton} = buttons;
+    const {runButton, stepButton, safeButton, complexityButton, flowchartButton, tablesButton, stopButton,
+        resetButton, copyButton} = buttons;
     // Run, Step and Stop on the left; the tools (restore, copy, theme, full screen) as icons on the right, so the bar
     // fits one row on a phone.
     const spacer = document.createElement('span');
     spacer.className = 'filter_codelab-spacer';
-    [runButton, stepButton, safeButton, complexityButton, flowchartButton, stopButton, spacer, resetButton, copyButton]
-        .filter(Boolean).forEach((b) => toolbar.append(b));
+    [runButton, stepButton, safeButton, complexityButton, flowchartButton, tablesButton, stopButton, spacer,
+        resetButton, copyButton].filter(Boolean).forEach((b) => toolbar.append(b));
     const note = document.createElement('span');
     note.className = 'filter_codelab-note';
     note.textContent = s.editedcopy;
@@ -720,6 +757,7 @@ const build = async(pre, index) => {
     classWork(block, index, {editor, panel, toolbar, before: spacer, host: main});
     aiHelp(block, panel, getMain);
     flowchartPanel(flowchartButton, main, editor, s);
+    tablesPanel(tablesButton, main, block.setup);
     const themeButton = setIcon(button('', 'theme'), 'theme', s.toggletheme);
     let currentTheme = initialTheme;
     themeButton.addEventListener('click', () => {

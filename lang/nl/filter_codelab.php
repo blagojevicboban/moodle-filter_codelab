@@ -28,6 +28,7 @@ $string['classwork'] = 'Klas';
 $string['classworkall'] = 'Alle';
 $string['classworkclose'] = 'Sluiten';
 $string['classworkcount'] = 'Kopieën van de studenten: {$a}';
+$string['classworkdiff'] = 'Wijzigingen tonen';
 $string['classworkempty'] = 'Nog geen enkele student heeft dit voorbeeld aangepast.';
 $string['classworkerror'] = 'fout';
 $string['classworkfilter'] = 'Kopieën tonen';
